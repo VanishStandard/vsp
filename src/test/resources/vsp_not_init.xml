@@ -1,0 +1,5 @@
+<template>
+	<templateDir>./</templateDir>
+	<sign>%</sign>
+	<checkPeriod>60</checkPeriod>
+</template>

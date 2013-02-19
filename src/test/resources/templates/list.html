@@ -1,0 +1,12 @@
+<html>
+	<head>
+		<%/common.html%>
+	</head>
+
+	<body>
+<ul><%for (var i = 0; i < list.length(); ++i) { %>
+<li id="%{list.apply(i).id()}">%{list.apply(i).name()}</li>
+<%}%>
+		</ul>
+	</body>
+</html>

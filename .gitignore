@@ -11,3 +11,13 @@ project/plugins/project/
 
 # Scala-IDE specific
 .scala_dependencies
+
+# ensime
+.ensime_lucene
+.ensime
+
+# cscope
+cscope.files
+cscope.in.out
+cscope.out
+cscope.po.out
