@@ -17,7 +17,7 @@ class TemplateConfigSpec extends FunSpec with ShouldMatchers {
 				config.templateDir.getAbsolutePath should be (new File("./").getAbsolutePath)
 				config.sign should be ('%')
 				config.checkPeriod should be (60)
-				config.initCompileFilter should be ("\\.html$")
+				config.initCompileFilter should be (".*\\.html$")
 			}
 		}
 
