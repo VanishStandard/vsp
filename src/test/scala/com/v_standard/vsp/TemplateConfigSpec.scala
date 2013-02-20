@@ -17,6 +17,17 @@ class TemplateConfigSpec extends FunSpec with ShouldMatchers {
 				config.templateDir.getAbsolutePath should be (new File("./").getAbsolutePath)
 				config.sign should be ('%')
 				config.checkPeriod should be (60)
+				config.initCompileFilter should be ("\\.html$")
+			}
+		}
+
+		describe("initCompileFilter を省略") {
+			it("initCompileFilter は None") {
+				val config = TemplateConfig("vsp_success_empty_init_compile_filter.xml")
+				config.templateDir.getAbsolutePath should be (new File("./").getAbsolutePath)
+				config.sign should be ('%')
+				config.checkPeriod should be (60)
+				config.initCompileFilter should be ("")
 			}
 		}
 

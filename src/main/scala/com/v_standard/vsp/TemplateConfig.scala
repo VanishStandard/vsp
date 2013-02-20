@@ -10,7 +10,7 @@ import scala.xml.XML
 /**
  * テンプレート設定クラス。
  */
-case class TemplateConfig(templateDir: File, sign: Char, checkPeriod: Int)
+case class TemplateConfig(templateDir: File, sign: Char, checkPeriod: Int, initCompileFilter: String)
 
 
 /**
@@ -27,7 +27,8 @@ object TemplateConfig {
 		using(ClassUtil.classLoader.getResourceAsStream(fileName)) { r =>
 			if (r == null) throw new FileNotFoundException(fileName)
 			val root = XML.load(r)
-			TemplateConfig(new File((root \ "templateDir").text), (root \ "sign").text(0), (root \ "checkPeriod").text.toInt)
+			TemplateConfig(new File((root \ "templateDir").text), (root \ "sign").text(0), (root \ "checkPeriod").text.toInt,
+				(root \ "initCompileFilter").text)
 		}
 	}
 }
