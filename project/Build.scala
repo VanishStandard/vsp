@@ -15,6 +15,9 @@ object ApplicationBuild extends Build {
 			organization := appOrganization,
 			version := appVersion,
 			scalaVersion := buildScalaVersion,
-			libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+			libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test",
+			libraryDependencies <+= scalaVersion {
+				"org.scala-lang" % "scala-actors" % _
+			}
 		))
 }

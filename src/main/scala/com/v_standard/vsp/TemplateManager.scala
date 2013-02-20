@@ -1,13 +1,13 @@
 package com.v_standard.vsp
 
-import com.v_standard.vsp.compiler.ScriptCompiler
-import com.v_standard.vsp.compiler.ScriptData
-import com.v_standard.vsp.compiler.TokenParseConfig
+import com.v_standard.vsp.compiler.{ScriptCompiler, ScriptData, TokenParseConfig}
 import com.v_standard.vsp.utils.ResourceUtil.using
-import java.io.File
-import java.io.FileNotFoundException
+import java.io.{File, FileNotFoundException}
+import java.nio.file.{FileSystems, FileVisitResult, Files, Path, SimpleFileVisitor}
+import java.nio.file.attribute.BasicFileAttributes
 import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
+import scala.actors.Actor.actor
 import scala.collection.mutable
 import scala.io.Source
 
@@ -78,7 +78,10 @@ object TemplateManager {
 	 * @param configName 設定ファイル名
 	 */
 	def init(configName: String = DEFAULT_CONFIG) {
-		managers += (configName -> TemplateManager(TemplateConfig(configName)))
+		val conf = TemplateConfig(configName)
+		val manager = TemplateManager(conf)
+		managers += (configName -> manager)
+		if (!conf.initCompileFilter.isEmpty) initCompileFiles(manager)
 	}
 
 	/**
@@ -90,5 +93,29 @@ object TemplateManager {
 	def apply(configName: String = DEFAULT_CONFIG): Template = {
 		if (!managers.contains(configName)) throw new IllegalStateException("Not initialize \"" + configName + "\".")
 		Template(managers(configName))
+	}
+
+
+	/**
+	 * 初期化時コンパイル。
+	 *
+	 * @param manager テンプレート管理
+	 */
+	private def initCompileFiles(manager: TemplateManager) {
+		actor {
+			val root = manager.config.templateDir.toPath
+			val matcher = FileSystems.getDefault().getPathMatcher("regex:" + manager.config.initCompileFilter)
+
+			Files.walkFileTree(root, new SimpleFileVisitor[Path]() {
+				override def visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult = {
+					if (matcher.matches(file)) {
+						actor {
+							manager.getScriptData(root.relativize(file).toString)
+						}
+					}
+					return FileVisitResult.CONTINUE
+				}
+			})
+		}
 	}
 }
