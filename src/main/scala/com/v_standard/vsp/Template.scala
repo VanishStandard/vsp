@@ -10,7 +10,7 @@ import java.io.OutputStreamWriter
 /**
  * テンプレートクラス。
  */
-case class Template(manager: TemplateManager) {
+class Template(val manager: TemplateManager) {
 	/** スクリプトエンジン */
 	lazy val engine = ScriptCompiler.createScriptEngine()
 

@@ -9,6 +9,7 @@ import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
 import scala.actors.Actor.actor
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
 
@@ -67,6 +68,9 @@ object TemplateManager {
 	/** デフォルト設定ファイル */
 	val DEFAULT_CONFIG = "vsp.xml"
 
+	/** 拡張 */
+	private val extensions: ArrayBuffer[TemplateExtension] = ArrayBuffer(new DefaultTemplateExtension)
+
 
 	/** テンプレートマネージャマップ */
 	private val managers = mutable.Map.empty[String, TemplateManager]
@@ -92,8 +96,13 @@ object TemplateManager {
 	 */
 	def apply(configName: String = DEFAULT_CONFIG): Template = {
 		if (!managers.contains(configName)) throw new IllegalStateException("Not initialize \"" + configName + "\".")
-		Template(managers(configName))
+		extensions.last.template(managers(configName))
 	}
+
+	/**
+	 * 拡張追加。
+	 */
+	def addExtension(extension: TemplateExtension) = extensions += extension
 
 
 	/**
