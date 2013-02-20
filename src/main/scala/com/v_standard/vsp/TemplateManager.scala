@@ -17,9 +17,15 @@ import scala.io.Source
  */
 case class TemplateManager(config: TemplateConfig) {
 	/** テンプレートデータマップ */
-	val templates = new ConcurrentHashMap[String, TemplateData]()
+	private val templates = new ConcurrentHashMap[String, TemplateData]()
 
 
+	/**
+	 * スクリプトデータ取得。
+	 *
+	 * @param fileName ファイル名
+	 * @return スクリプトデータ
+	 */
 	def getScriptData(fileName: String): ScriptData = {
 		val file = new File(config.templateDir, fileName)
 		if (!file.exists) throw new FileNotFoundException(fileName)
@@ -34,6 +40,7 @@ case class TemplateManager(config: TemplateConfig) {
 		templates.put(key, TemplateData(newSd, new Date))
 		newSd
 	}
+
 
 	/**
 	 * 更新日付チェックが必要か。
@@ -62,7 +69,7 @@ object TemplateManager {
 
 
 	/** テンプレートマネージャマップ */
-	val managers = mutable.Map.empty[String, TemplateManager]
+	private val managers = mutable.Map.empty[String, TemplateManager]
 
 
 	/**
