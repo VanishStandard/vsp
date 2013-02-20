@@ -11,6 +11,13 @@ import org.scalatest.matchers.ShouldMatchers
  */
 class TemplateManagerSpec extends FunSpec with ShouldMatchers {
 	describe("apply") {
+		describe("デフォルトファイルの読み込み") {
+			it("Template オブジェクトを返す") {
+				TemplateManager.init()
+				TemplateManager() should not be (null)
+			}
+		}
+
 		describe("正常なフォーマットファイル") {
 			it("Template オブジェクトを返す") {
 				TemplateManager.init("vsp_success.xml")
