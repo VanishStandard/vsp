@@ -11,8 +11,8 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 	describe("build") {
 		describe("正常なフォーマットファイル") {
 			it("展開された文字列を返す") {
-				TemplateManager.init("vsp_success2.xml")
-				val template = TemplateManager("vsp_success2.xml")
+				DefaultTemplateManager.init("vsp_success2.xml")
+				val template = DefaultTemplateManager.template("vsp_success2.xml")
 				template.addVar("n", 1)
 				template.addVar("title", "タイトル")
 
