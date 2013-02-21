@@ -10,7 +10,7 @@ import org.scalatest.matchers.ShouldMatchers
  * TemplateManager テストスペッククラス。
  */
 class TemplateManagerSpec extends FunSpec with ShouldMatchers {
-	describe("apply") {
+	describe("template") {
 		describe("デフォルトファイルの読み込み") {
 			it("Template オブジェクトを返す") {
 				DefaultTemplateManager.init()
