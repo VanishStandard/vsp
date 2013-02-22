@@ -4,7 +4,7 @@ import Keys._
 
 object ApplicationBuild extends Build {
 	val appName = "vsp"
-	val appVersion = "0.1.0"
+	val appVersion = "0.2.0"
 	val appOrganization = "com.v_standard.vsp"
 	val buildScalaVersion = "2.10.0"
 
