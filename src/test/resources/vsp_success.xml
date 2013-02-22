@@ -2,4 +2,5 @@
 	<templateDir>./</templateDir>
 	<sign>%</sign>
 	<checkPeriod>60</checkPeriod>
+	<initCompileFilter> .*\.html$ </initCompileFilter>
 </template>

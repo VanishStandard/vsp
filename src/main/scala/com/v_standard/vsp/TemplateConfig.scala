@@ -2,15 +2,15 @@ package com.v_standard.vsp
 
 import com.v_standard.vsp.utils.ClassUtil
 import com.v_standard.vsp.utils.ResourceUtil.using
-import java.io.File
-import java.io.FileNotFoundException
+import com.v_standard.vsp.utils.StringUtil
+import java.io.{File, FileNotFoundException}
 import scala.xml.XML
 
 
 /**
  * テンプレート設定クラス。
  */
-case class TemplateConfig(templateDir: File, sign: Char, checkPeriod: Int)
+case class TemplateConfig(templateDir: File, sign: Char, checkPeriod: Int, initCompileFilter: String)
 
 
 /**
@@ -27,7 +27,11 @@ object TemplateConfig {
 		using(ClassUtil.classLoader.getResourceAsStream(fileName)) { r =>
 			if (r == null) throw new FileNotFoundException(fileName)
 			val root = XML.load(r)
-			TemplateConfig(new File((root \ "templateDir").text), (root \ "sign").text(0), (root \ "checkPeriod").text.toInt)
+			TemplateConfig(
+				new File(StringUtil.trimWide((root \ "templateDir").text)),
+				StringUtil.trimWide((root \ "sign").text)(0),
+				StringUtil.trimWide((root \ "checkPeriod").text).toInt,
+				StringUtil.trimWide((root \ "initCompileFilter").text))
 		}
 	}
 }

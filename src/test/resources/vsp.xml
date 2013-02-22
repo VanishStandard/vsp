@@ -1,0 +1,6 @@
+<template>
+	<templateDir>./src/test/resources/templates</templateDir>
+	<sign>%</sign>
+	<checkPeriod>60</checkPeriod>
+	<initCompileFilter>.*\.html$</initCompileFilter>
+</template>
