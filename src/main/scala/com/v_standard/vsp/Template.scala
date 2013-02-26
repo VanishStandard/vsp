@@ -1,10 +1,8 @@
 package com.v_standard.vsp
 
 import com.v_standard.vsp.compiler.ScriptCompiler
-import com.v_standard.vsp.script.ScriptDefine
-import com.v_standard.vsp.script.ScriptFunction
-import java.io.ByteArrayOutputStream
-import java.io.OutputStreamWriter
+import com.v_standard.vsp.script.{HtmlFunction, ScriptDefine, ScriptFunction}
+import java.io.{ByteArrayOutputStream, OutputStreamWriter}
 
 
 /**
@@ -37,7 +35,8 @@ class Template(val manager: TemplateDataManager) {
 		val sd = manager.getScriptData(fileName)
 		sd.text.getOrElse {
 			val out = new ByteArrayOutputStream()
-			engine.put(ScriptDefine.SCRIPT_OBJ_NAME, new ScriptFunction())
+			engine.put(ScriptDefine.SCRIPT_OBJ_NAME, new ScriptFunction(out))
+			engine.put(ScriptDefine.HTML_OBJ_NAME, new HtmlFunction(out))
 			val context = engine.getContext()
 			context.setWriter(new OutputStreamWriter(out))
 			sd.cscript.get.eval(context)

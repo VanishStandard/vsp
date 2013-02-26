@@ -1,6 +1,7 @@
 package com.v_standard.vsp.script
 
 import com.v_standard.vsp.utils.StringUtil
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
@@ -14,7 +15,7 @@ case class Raw(str: String)
 /**
  * スクリプトファンクションクラス。
  */
-class ScriptFunction {
+class ScriptFunction(val out: ByteArrayOutputStream) {
 	/**
 	 * エスケープ無し文字列保持オブジェクト取得。
 	 *
@@ -65,7 +66,7 @@ class ScriptFunction {
 	 * @param opt 日時
 	 * @return フォーマット済み文字列
 	 */
-	def format(pattern: String, opt: Option[_]): String = opt match {
+	def format(pattern: String, opt: Option[_]): String = (opt: @unchecked) match {
 		case None => ""
 		case Some(dt: Date) => format(pattern, dt)
 		case Some(c: Calendar) => format(pattern, c)

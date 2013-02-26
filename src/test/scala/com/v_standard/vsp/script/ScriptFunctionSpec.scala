@@ -10,7 +10,7 @@ import org.scalatest.matchers.ShouldMatchers
  */
 class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 	describe("row") {
-		val sf = new ScriptFunction
+		val sf = new ScriptFunction(null)
 		describe("文字を与えた場合") {
 			it("Row を返す") {
 
@@ -19,7 +19,7 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 		}
 
 		describe("escape") {
-			val sf = new ScriptFunction
+			val sf = new ScriptFunction(null)
 			describe("文字を与えた場合") {
 				it("HTML エスケープされた文字列を返す") {
 
@@ -37,7 +37,7 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 	}
 
 	describe("format") {
-		val sf = new ScriptFunction
+		val sf = new ScriptFunction(null)
 		val cal = Calendar.getInstance
 		cal.set(2000, 2, 9, 2, 3, 1)
 

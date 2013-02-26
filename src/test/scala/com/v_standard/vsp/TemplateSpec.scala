@@ -46,5 +46,29 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 """)
 			}
 		}
+
+		describe("HTML フォームフォーマットファイル") {
+			it("展開された文字列を返す") {
+				DefaultTemplateManager.init("vsp_success2.xml")
+				val template = DefaultTemplateManager.template("vsp_success2.xml")
+				template.addVar("chk1", "3")
+				template.addVar("chk2", "2")
+				template.addVar("rd1", None)
+
+				case class Obj(id: Int, name: String)
+				template.build("form.html") should be ("""<html>
+<body>
+	<form action="/profile/register" method="POST">
+		<input type="checkbox" name="chk1" value="1">
+		<input type="checkbox" name="chk2" value="2" checked>
+
+		<input type="radio" name="rd1" value="3" checked>
+		<input type="radio" name="rd1" value="4">
+	</form>
+</body>
+</html>
+""")
+			}
+		}
 	}
 }
