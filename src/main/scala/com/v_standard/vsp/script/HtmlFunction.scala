@@ -2,6 +2,7 @@ package com.v_standard.vsp.script
 
 import com.v_standard.vsp.utils.StringUtil
 import java.io.ByteArrayOutputStream
+import sun.org.mozilla.javascript.internal.NativeArray
 import sun.org.mozilla.javascript.internal.NativeObject
 import scala.collection.JavaConverters._
 
@@ -10,16 +11,20 @@ import scala.collection.JavaConverters._
  * HTML ファンクションクラス。
  */
 class HtmlFunction(val out: ByteArrayOutputStream) {
+	/** パラメータ：値 */
+	val PARAM_VALUE = "value"
 	/** パラメータ：XHTML フラグ */
 	val PARAM_XHTML = "_xhtml"
 	/** パラメータ：デフォルト */
 	val PARAM_DEFAULT = "_default"
+	/** パラメータ：リスト */
+	val PARAM_LIST = "_list"
 
 
 	/**
 	 * チェックボックスタグ出力。
 	 *
-	 * @param obj 現在の値オブジェクト
+	 * @param obj 現在値オブジェクト
 	 * @param パラメータ(必須: value, オプション: _xhtml)
 	 */
 	def checkbox(obj: Any, param: NativeObject): Unit = out.write(checkboxTag(obj, param).getBytes)
@@ -27,24 +32,34 @@ class HtmlFunction(val out: ByteArrayOutputStream) {
 	/**
 	 * ラジオボタンタグ出力。
 	 *
-	 * @param obj 現在の値オブジェクト
+	 * @param obj 現在値オブジェクト
 	 * @param パラメータ(必須: value, オプション: _xhtml, _default)
 	 */
 	def radio(obj: Any, param: NativeObject): Unit = out.write(radioTag(obj, param).getBytes)
+
+	/**
+	 * セレクトボックスタグ出力。
+	 *
+	 * @param obj 現在値オブジェクト
+	 * @param パラメータ(必須: _list, オプション: _xhtml, _default)
+	 */
+	def select(obj: Any, param: NativeObject): Unit = out.write(selectTag(obj, param).getBytes)
 
 
 	/**
 	 * チェックボックスタグ生成。
 	 *
-	 * @param obj 現在の値オブジェクト
+	 * @param obj 現在値オブジェクト
 	 * @param パラメータ
 	 * @return タグ
 	 */
 	protected def checkboxTag(obj: Any, param: NativeObject): String = {
-		checkRequiredParam(param, List("value"))
+		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"checkbox\"").append(createAttrByParam(param))
 		val xhtml = isXhtml(param)
-		if (param.get("value") == obj) {
+		val currentValue = convertCurrentValue(obj)
+
+		if (param.get(PARAM_VALUE) == currentValue) {
 			if (xhtml) tag.append(" checked=\"checked\"")
 			else tag.append(" checked")
 		}
@@ -57,29 +72,57 @@ class HtmlFunction(val out: ByteArrayOutputStream) {
 	/**
 	 * ラジオボタンタグ生成。
 	 *
-	 * @param obj 現在の値オブジェクト
+	 * @param obj 現在値オブジェクト
 	 * @param パラメータ
 	 * @return タグ
 	 */
 	protected def radioTag(obj: Any, param: NativeObject): String = {
-		checkRequiredParam(param, List("value"))
+		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"radio\"").append(createAttrByParam(param))
 		val xhtml = isXhtml(param)
+		val currentValue = convertCurrentValue(obj)
 
-		val currentValue = obj match {
-			case None => null
-			case Some(v) => v
-			case v => v
-		}
-
-		if ((currentValue == null || currentValue.toString == "") && getBoolean(param, PARAM_DEFAULT, false) ||
-			param.get("value") == currentValue) {
+		if ((currentValue == null || currentValue == "") && getBoolean(param, PARAM_DEFAULT, false) ||
+			param.get(PARAM_VALUE) == currentValue) {
 			if (xhtml) tag.append(" checked=\"checked\"")
 			else tag.append(" checked")
 		}
 
 		if (xhtml) tag.append(" />")
 		else tag.append(">")
+		tag.toString
+	}
+
+	/**
+	 * セレクトタグ生成。
+	 *
+	 * @param obj 現在値オブジェクト
+	 * @param パラメータ
+	 * @return タグ
+	 */
+	protected def selectTag(obj: Any, param: NativeObject): String = {
+		checkRequiredParam(param, List(PARAM_LIST))
+		val tag = new StringBuilder("<select").append(createAttrByParam(param)).append(">")
+println("%%%%% " + tag)
+		val xhtml = isXhtml(param)
+		val currentValue = convertCurrentValue(obj)
+
+		if (param.containsKey(PARAM_DEFAULT)) {
+println("%%%%% " + tag)
+			val entries = param.get(PARAM_DEFAULT).asInstanceOf[NativeObject].entrySet
+			val it = entries.iterator
+			if (it.hasNext) {
+				val e = it.next
+				tag.append(optionTag(e.getKey.toString, e.getValue.toString, currentValue, xhtml))
+			}
+println("%%%%% " + tag)
+		}
+println("%%%%%2 " + tag)
+
+		convertOptionList(param).foreach(lv => tag.append(optionTag(lv._1, lv._2, currentValue, xhtml)))
+println("%%%%%3 " + tag)
+
+		tag.append("</select>")
 		tag.toString
 	}
 
@@ -129,5 +172,55 @@ class HtmlFunction(val out: ByteArrayOutputStream) {
 	private def getBoolean(param: NativeObject, name: String, default: Boolean) = {
 		if (!param.containsKey(name)) default
 		else param.get(name).asInstanceOf[Boolean]
+	}
+
+	/**
+	 * 現在値を文字列に変換
+	 *
+	 * @param 現在値
+	 * @return 変換後の文字列
+	 */
+	private def convertCurrentValue(obj: Any): String = obj match {
+		case null => null
+		case None => null
+		case Some(v) => v.toString
+		case v => v.toString
+	}
+
+	/**
+	 * オプションのリスト変換。
+	 *
+	 * @param param パラメータ
+	 * @return 変換後のリスト
+	 */
+	private def convertOptionList(param: NativeObject): Seq[(String, String)] = {
+		param.get(PARAM_LIST) match {
+			case lst: NativeObject => lst.entrySet.asScala.map(e => (e.getKey.toString, e.getValue.toString)).toSeq.reverse
+			case lst: Seq[_] => lst.map {
+				case (l, v) => (l.toString, v.toString)
+			}
+			case lst: Array[_] => lst.map {
+				case (l, v) => (l.toString, v.toString)
+			}
+		}
+	}
+
+	/**
+	 * <option> タグ生成。
+	 *
+	 * @param label ラベル
+	 * @param value 値
+	 * @param currentValue 現在値
+	 * @param xhtml XHTML なら true
+	 * @return タグ
+	 */
+	private def optionTag(label: String, value: String, currentValue: String, xhtml: Boolean): String = {
+		val tag = new StringBuilder(s"""<option value="$value"""")
+		if (value == currentValue) {
+			if (xhtml) tag.append(" selected=\"selected\"")
+			else tag.append(" selected")
+		}
+		tag.append(s">$label</option>")
+		tag.toString
 	}
 }

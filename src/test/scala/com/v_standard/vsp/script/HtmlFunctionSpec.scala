@@ -1,5 +1,6 @@
 package com.v_standard.vsp.script
 
+import javax.script.ScriptEngine
 import javax.script.{ScriptContext, ScriptEngineManager}
 import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
@@ -13,13 +14,15 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 	class HtmlFunctionWrapper extends HtmlFunction(null) {
 		override def checkboxTag(obj: Any, param: NativeObject): String = super.checkboxTag(obj, param)
 		override def radioTag(obj: Any, param: NativeObject): String = super.radioTag(obj, param)
+		override def selectTag(obj: Any, param: NativeObject): String = super.selectTag(obj, param)
 	}
 
 
-	private def createParam(script: String): NativeObject = {
+	private def createParam(script: String, binds: (String, Any)*): NativeObject = {
 		val engine = new ScriptEngineManager().getEngineByName("JavaScript")
+		binds.foreach(t => engine.put(t._1, t._2))
 		engine.eval("param = " + script)
-		engine.get("param").asInstanceOf[NativeObject]
+	engine.get("param").asInstanceOf[NativeObject]
 	}
 
 
@@ -132,8 +135,8 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 				it("HTML タグを返す") {
 					val html = new HtmlFunctionWrapper
 					val actual = html.radioTag("5",
-						createParam("""param = { value: "1", name: "chk", id: "chk1", "class": "xxx" }"""))
-					actual should be ("""<input type="radio" value="1" name="chk" id="chk1" class="xxx">""")
+						createParam("""param = { value: "1", name: "rd", id: "rd1", "class": "xxx" }"""))
+					actual should be ("""<input type="radio" value="1" name="rd" id="rd1" class="xxx">""")
 				}
 			}
 		}
@@ -173,6 +176,86 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 						createParam("""param = { value: "1", name: "chk", id: "chk1", "class": "xxx", _default: true }"""))
 					actual should be ("""<input type="radio" value="1" name="chk" id="chk1" class="xxx" checked>""")
 				}
+			}
+		}
+	}
+
+	describe("select") {
+		describe("パラメータ指定に _list が無い") {
+			it("IllegalArgumentException") {
+				val html = new HtmlFunctionWrapper
+				val e = evaluating { html.selectTag("5", createParam("{value: 3 }")) } should produce
+					[IllegalArgumentException]
+				e.getMessage should be ("\"_list\" is required.")
+			}
+		}
+
+		describe("値が一致") {
+			describe("_list は JavaScript の配列") {
+				describe("HTML") {
+					it("HTML タグを返す") {
+						val html = new HtmlFunctionWrapper
+						val actual = html.selectTag("2", createParam("param = { _list: {a: '1', b: '2', c: '3'} }"))
+						actual should be ("""<select><option value="1">a</option><option value="2" selected>b</option>""" +
+							"""<option value="3">c</option></select>""")
+					}
+				}
+
+				describe("XHTML") {
+					it("XHTML タグを返す") {
+						val html = new HtmlFunctionWrapper
+						val actual = html.selectTag("2",
+							createParam("param = { _list: {a: '1', b: '2', c: '3'}, _xhtml: true }"))
+						actual should be ("""<select><option value="1">a</option>""" +
+							"""<option value="2" selected="selected">b</option><option value="3">c</option></select>""")
+					}
+				}
+			}
+		}
+
+		describe("_list は List") {
+			describe("HTML") {
+				it("HTML タグを返す") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.selectTag("2", createParam("param = { _list: options }", ("options",
+						List("a" -> "1", "b" -> "2", "c" -> "3"))))
+					actual should be ("""<select><option value="1">a</option><option value="2" selected>b</option>""" +
+						"""<option value="3">c</option></select>""")
+				}
+			}
+		}
+
+		describe("_list は Array") {
+			describe("HTML") {
+				it("HTML タグを返す") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.selectTag("2", createParam("param = { _list: options }", ("options",
+						Array("a" -> "1", "b" -> "2", "c" -> "3"))))
+					actual should be ("""<select><option value="1">a</option><option value="2" selected>b</option>""" +
+						"""<option value="3">c</option></select>""")
+				}
+			}
+		}
+
+		describe("その他パラメータ") {
+			describe("HTML") {
+				it("HTML タグを返す") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.selectTag("2", createParam("param = { _list: {a: '1', b: '2', c: '3'}, " +
+						"""name: "slt", id: "slt1", "class": "xxx" }"""))
+					actual should be ("""<select name="slt" id="slt1" class="xxx"><option value="1">a</option>""" +
+						"""<option value="2" selected>b</option><option value="3">c</option></select>""")
+				}
+			}
+		}
+
+		describe("デフォルト値") {
+			it("最初に挿入される") {
+				val html = new HtmlFunctionWrapper
+				val actual = html.selectTag("2", createParam("param = { _list: {a: '1', b: '2', c: '3'}, " +
+					"""_default: { "選択してください": "" } }"""))
+				actual should be ("""<select><option value="">選択してください</option><option value="1">a</option>""" +
+					"""<option value="2" selected>b</option><option value="3">c</option></select>""")
 			}
 		}
 	}

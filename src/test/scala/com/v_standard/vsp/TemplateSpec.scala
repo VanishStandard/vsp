@@ -54,6 +54,8 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 				template.addVar("chk1", "3")
 				template.addVar("chk2", "2")
 				template.addVar("rd1", None)
+				template.addVar("slt1", None)
+				template.addVar("options", Array(("北海道" -> "1"), ("青森県" -> "2")))
 
 				case class Obj(id: Int, name: String)
 				template.build("form.html") should be ("""<html>
@@ -64,6 +66,8 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 
 		<input type="radio" name="rd1" value="3" checked>
 		<input type="radio" name="rd1" value="4">
+
+		<select name="slt1"><option value="">選択してください</option><option value="1">北海道</option><option value="2">青森県</option></select>
 	</form>
 </body>
 </html>
