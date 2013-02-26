@@ -1,5 +1,6 @@
 package com.v_standard.vsp
 
+import java.util.Calendar
 import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
 
@@ -15,6 +16,10 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 				val template = DefaultTemplateManager.template("vsp_success2.xml")
 				template.addVar("n", 1)
 				template.addVar("title", "タイトル")
+				val cal = Calendar.getInstance
+				cal.set(2000, 2, 9, 2, 3, 1)
+				template.addVar("dt", cal)
+
 
 				case class Obj(id: Int, name: String)
 				template.build("list.html",
@@ -35,6 +40,7 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 <li id="3">さしすせそ</li>
 
 		</ul>
+2000-03-09 &lt;02:03:01&gt;
 	</body>
 </html>
 """)
