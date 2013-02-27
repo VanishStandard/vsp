@@ -45,6 +45,27 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 
 
 	/**
+	 * 改行を <br /> に変換。
+	 *
+	 * @param str 文字列
+	 * @return Raw オブジェクト
+	 */
+	def br(str: String): Raw = {
+	 Raw(StringUtil.crlf2br(StringUtil.htmlEscape(str)))
+	}
+
+	/**
+	 * 改行を <br /> に変換。
+	 *
+	 * @param str 文字列
+	 * @return Raw オブジェクト
+	 */
+	def br(oc: OutputConverter): Raw = {
+	 Raw(StringUtil.crlf2br(oc.mkString))
+	}
+
+
+	/**
 	 * チェックボックスタグ生成。
 	 *
 	 * @param obj 現在値オブジェクト

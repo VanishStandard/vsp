@@ -7,9 +7,19 @@ import java.util.{Calendar, Date}
 
 
 /**
+ * 出力用変換トレイト。
+ */
+trait OutputConverter {
+	def mkString: String
+}
+
+
+/**
  * エスケープ無し文字列保持クラス。
  */
-case class Raw(str: String)
+case class Raw(private val str: String) extends OutputConverter {
+	override def mkString: String = str
+}
 
 
 /**
@@ -35,10 +45,10 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 	/**
 	 * エスケープ無し文字列取得。
 	 *
-	 * @param raw エスケープ無し文字列保持オブジェクト
+	 * @param 出力用変換オブジェクト
 	 * @return 文字列
 	 */
-	def escape(raw: Raw): String = raw.str
+	def escape(oc: OutputConverter): String = oc.mkString
 
 
 	/**

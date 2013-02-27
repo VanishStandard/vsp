@@ -259,4 +259,21 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 			}
 		}
 	}
+
+	describe("br") {
+		val html = new HtmlFunctionWrapper
+		describe("文字列を与えた場合") {
+			it("エスケープ後、改行を <br /> に変換した文字列を返す") {
+				val actual = html.br("a\n<b>\rc\r\nd").mkString
+				actual should be ("a<br />&lt;b&gt;<br />c<br />d")
+			}
+		}
+
+		describe("Raw を与えた場合") {
+			it("エスケープせず、改行を <br /> に変換した文字列を返す") {
+				val actual = html.br(Raw("a\n<b>\rc\r\nd")).mkString
+				actual should be ("a<br /><b><br />c<br />d")
+			}
+		}
+	}
 }
