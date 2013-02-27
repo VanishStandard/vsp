@@ -14,6 +14,9 @@ class Template(val manager: TemplateDataManager) {
 	/** スクリプトエンジン */
 	lazy val engine = ScriptCompiler.createScriptEngine()
 
+	/** XHTML フラグ */
+	var isXhtml = false
+
 
 	/**
 	 * 変数追加。
@@ -36,7 +39,7 @@ class Template(val manager: TemplateDataManager) {
 		sd.text.getOrElse {
 			val out = new ByteArrayOutputStream()
 			engine.put(ScriptDefine.SCRIPT_OBJ_NAME, new ScriptFunction(out))
-			engine.put(ScriptDefine.HTML_OBJ_NAME, new HtmlFunction(out))
+			engine.put(ScriptDefine.HTML_OBJ_NAME, new HtmlFunction(out, isXhtml))
 			val context = engine.getContext()
 			context.setWriter(new OutputStreamWriter(out))
 			sd.cscript.get.eval(context)

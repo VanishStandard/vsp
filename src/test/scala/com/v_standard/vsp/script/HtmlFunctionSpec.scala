@@ -11,7 +11,7 @@ import sun.org.mozilla.javascript.internal.NativeObject
  * HtmlFunction テストスペッククラス。
  */
 class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
-	class HtmlFunctionWrapper extends HtmlFunction(null) {
+	class HtmlFunctionWrapper(isXhtml: Boolean = false) extends HtmlFunction(null, isXhtml) {
 		override def checkboxTag(obj: Any, param: NativeObject): String = super.checkboxTag(obj, param)
 		override def radioTag(obj: Any, param: NativeObject): String = super.radioTag(obj, param)
 		override def selectTag(obj: Any, param: NativeObject): String = super.selectTag(obj, param)
@@ -47,8 +47,8 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 
 			describe("XHTML") {
 				it("XHTML タグを返す") {
-					val html = new HtmlFunctionWrapper
-					val actual = html.checkboxTag("5", createParam("param = { value: \"1\", _xhtml: true }"))
+					val html = new HtmlFunctionWrapper(true)
+					val actual = html.checkboxTag("5", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="checkbox" value="1" />""")
 				}
 			}
@@ -65,8 +65,8 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 
 			describe("XHTML") {
 				it("XHTML タグを返す") {
-					val html = new HtmlFunctionWrapper
-					val actual = html.checkboxTag("1", createParam("param = { value: \"1\", _xhtml: true }"))
+					val html = new HtmlFunctionWrapper(true)
+					val actual = html.checkboxTag("1", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="checkbox" value="1" checked="checked" />""")
 				}
 			}
@@ -105,8 +105,8 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 
 			describe("XHTML") {
 				it("XHTML タグを返す") {
-					val html = new HtmlFunctionWrapper
-					val actual = html.radioTag("5", createParam("param = { value: \"1\", _xhtml: true }"))
+					val html = new HtmlFunctionWrapper(true)
+					val actual = html.radioTag("5", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="radio" value="1" />""")
 				}
 			}
@@ -123,8 +123,8 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 
 			describe("XHTML") {
 				it("XHTML タグを返す") {
-					val html = new HtmlFunctionWrapper
-					val actual = html.radioTag("1", createParam("param = { value: \"1\", _xhtml: true }"))
+					val html = new HtmlFunctionWrapper(true)
+					val actual = html.radioTag("1", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="radio" value="1" checked="checked" />""")
 				}
 			}
@@ -203,9 +203,9 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 
 				describe("XHTML") {
 					it("XHTML タグを返す") {
-						val html = new HtmlFunctionWrapper
+						val html = new HtmlFunctionWrapper(true)
 						val actual = html.selectTag("2",
-							createParam("param = { _list: {a: '1', b: '2', c: '3'}, _xhtml: true }"))
+							createParam("param = { _list: {a: '1', b: '2', c: '3'} }"))
 						actual should be ("""<select><option value="1">a</option>""" +
 							"""<option value="2" selected="selected">b</option><option value="3">c</option></select>""")
 					}

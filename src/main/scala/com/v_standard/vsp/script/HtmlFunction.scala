@@ -10,11 +10,9 @@ import scala.collection.JavaConverters._
 /**
  * HTML ファンクションクラス。
  */
-class HtmlFunction(val out: ByteArrayOutputStream) {
+class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	/** パラメータ：値 */
 	val PARAM_VALUE = "value"
-	/** パラメータ：XHTML フラグ */
-	val PARAM_XHTML = "_xhtml"
 	/** パラメータ：デフォルト */
 	val PARAM_DEFAULT = "_default"
 	/** パラメータ：リスト */
@@ -56,7 +54,7 @@ class HtmlFunction(val out: ByteArrayOutputStream) {
 	protected def checkboxTag(obj: Any, param: NativeObject): String = {
 		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"checkbox\"").append(createAttrByParam(param))
-		val xhtml = isXhtml(param)
+		val xhtml = isXhtml
 		val currentValue = convertCurrentValue(obj)
 
 		if (param.get(PARAM_VALUE) == currentValue) {
@@ -79,7 +77,7 @@ class HtmlFunction(val out: ByteArrayOutputStream) {
 	protected def radioTag(obj: Any, param: NativeObject): String = {
 		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"radio\"").append(createAttrByParam(param))
-		val xhtml = isXhtml(param)
+		val xhtml = isXhtml
 		val currentValue = convertCurrentValue(obj)
 
 		if ((currentValue == null || currentValue == "") && getBoolean(param, PARAM_DEFAULT, false) ||
@@ -103,24 +101,19 @@ class HtmlFunction(val out: ByteArrayOutputStream) {
 	protected def selectTag(obj: Any, param: NativeObject): String = {
 		checkRequiredParam(param, List(PARAM_LIST))
 		val tag = new StringBuilder("<select").append(createAttrByParam(param)).append(">")
-println("%%%%% " + tag)
-		val xhtml = isXhtml(param)
+		val xhtml = isXhtml
 		val currentValue = convertCurrentValue(obj)
 
 		if (param.containsKey(PARAM_DEFAULT)) {
-println("%%%%% " + tag)
 			val entries = param.get(PARAM_DEFAULT).asInstanceOf[NativeObject].entrySet
 			val it = entries.iterator
 			if (it.hasNext) {
 				val e = it.next
 				tag.append(optionTag(e.getKey.toString, e.getValue.toString, currentValue, xhtml))
 			}
-println("%%%%% " + tag)
 		}
-println("%%%%%2 " + tag)
 
 		convertOptionList(param).foreach(lv => tag.append(optionTag(lv._1, lv._2, currentValue, xhtml)))
-println("%%%%%3 " + tag)
 
 		tag.append("</select>")
 		tag.toString
@@ -152,14 +145,6 @@ println("%%%%%3 " + tag)
 		}
 		attr.toString
 	}
-
-	/**
-	 * XHTML かどうか。
-	 *
-	 * @param param パラメータ
-	 * @return XHTML なら true
-	 */
-	private def isXhtml(param: NativeObject) = getBoolean(param, PARAM_XHTML, false)
 
 	/**
 	 * bool 値取得。
