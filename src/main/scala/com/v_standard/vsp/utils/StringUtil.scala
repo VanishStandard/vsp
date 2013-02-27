@@ -13,8 +13,34 @@ object StringUtil {
 	 */
 	def htmlEscape(str: String): String = {
 		assert(str != null, "str is null")
-		str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").
-			replaceAll("\"", "&quot;").replaceAll("'", "&#39;")
+		val res = new StringBuilder
+		str.foreach {
+			case '&' => res.append("&amp;")
+			case '<' => res.append("&lt;")
+			case '>' => res.append("&gt;")
+			case '"' => res.append("&quot;")
+			case '\'' => res.append("&#39;")
+			case ch => res.append(ch)
+		}
+		res.toString
+	}
+
+	/**
+	 * 改行を <br /> に変換。
+	 *
+	 * @param str 変換対象文字列
+	 * @return 変換後文字列
+	 */
+	def crlf2br(str: String): String = {
+		assert(str != null, "str is null")
+		var preCr = false
+		val res = new StringBuilder
+		str.foreach {
+			case '\r' => res.append("<br />"); preCr = true
+			case '\n' => if (!preCr) res.append("<br />"); preCr = false
+			case ch => res.append(ch); preCr = false
+		}
+		res.toString
 	}
 
 	/**

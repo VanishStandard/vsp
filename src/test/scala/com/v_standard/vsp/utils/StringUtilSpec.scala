@@ -22,6 +22,26 @@ class StringUtilSpec extends FunSpec with ShouldMatchers {
 		}
 	}
 
+	describe("crlf2br") {
+		describe("\r\n を含む文字列") {
+			it("<br /> 1 つに変換される") {
+				StringUtil.crlf2br("a\r\nb") should be ("a<br />b")
+			}
+		}
+
+		describe("\r を含む文字列") {
+			it("<br /> 1 つに変換される") {
+				StringUtil.crlf2br("a\rb") should be ("a<br />b")
+			}
+		}
+
+		describe("\n を含む文字列") {
+			it("<br /> 1 つに変換される") {
+				StringUtil.crlf2br("a\nb") should be ("a<br />b")
+			}
+		}
+	}
+
 	describe("trimWide") {
 		it("全角スペースもトリムされる") {
 			val str = " \t　abc\t 　"
