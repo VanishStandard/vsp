@@ -71,7 +71,49 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 			}
 		}
 
+		describe("Long 型") {
+			describe("値を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,###,##0", 1234L) should be ("1,234")
+					sf.format("#,###,##0", 123L) should be ("123")
+				}
+			}
+		}
+
+		describe("Int 型") {
+			describe("値を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,###,##0", 1234) should be ("1,234")
+					sf.format("#,###,##0", 123) should be ("123")
+				}
+			}
+		}
+
+		describe("Double 型") {
+			describe("値を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,###,##0.0#", 1234.5678) should be ("1,234.57")
+					sf.format("#,###,##0.0#", 123.0) should be ("123.0")
+				}
+			}
+		}
+
+		describe("Float 型") {
+			describe("値を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,###,##0.0#", 1234.5678F) should be ("1,234.57")
+					sf.format("#,###,##0.0#", 123.0F) should be ("123.0")
+				}
+			}
+		}
+
 		describe("Option 型") {
+			describe("None を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("yyyy/MM/dd hh:mm:ss", None) should be ("")
+				}
+			}
+
 			describe("Option[Date] を与えた場合") {
 				it("フォーマットされた文字列を返す") {
 					sf.format("yyyy/MM/dd hh:mm:ss", Some(cal.getTime)) should be ("2000/03/09 02:03:01")
@@ -84,16 +126,33 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 				}
 			}
 
-			describe("None を与えた場合") {
-				it("フォーマットされた文字列を返す") {
-					val dt: Date = null
-					sf.format("yyyy/MM/dd hh:mm:ss", None) should be ("")
-				}
-			}
-
 			describe("Option[String] を与えた場合") {
 				it("フォーマットされた文字列を返す") {
 					evaluating { sf.format("yyyy/MM/dd hh:mm:ss", Some("2000/03/09 02:03:01")) } should produce [MatchError]
+				}
+			}
+
+			describe("Option[Long] を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,##0", Some(12345L)) should be ("12,345")
+				}
+			}
+
+			describe("Option[Int] を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("000", Some(12)) should be ("012")
+				}
+			}
+
+			describe("Option[Double] を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,###,##0.#", Some(123.0)) should be ("123")
+				}
+			}
+
+			describe("Option[Float] を与えた場合") {
+				it("フォーマットされた文字列を返す") {
+					sf.format("#,###,##0.#", Some(123.0F)) should be ("123")
 				}
 			}
 		}

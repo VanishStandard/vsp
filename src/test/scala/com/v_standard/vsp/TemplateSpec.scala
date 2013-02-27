@@ -19,6 +19,7 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 				val cal = Calendar.getInstance
 				cal.set(2000, 2, 9, 2, 3, 1)
 				template.addVar("dt", cal)
+				template.addVar("num", 1234)
 
 
 				case class Obj(id: Int, name: String)
@@ -41,6 +42,7 @@ class TemplateSpec extends FunSpec with ShouldMatchers {
 
 		</ul>
 2000-03-09 &lt;02:03:01&gt;
+1,234
 	</body>
 </html>
 """)

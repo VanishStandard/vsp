@@ -2,7 +2,7 @@ package com.v_standard.vsp.script
 
 import com.v_standard.vsp.utils.StringUtil
 import java.io.ByteArrayOutputStream
-import java.text.SimpleDateFormat
+import java.text.{DecimalFormat, SimpleDateFormat}
 import java.util.{Calendar, Date}
 
 
@@ -60,15 +60,37 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 	def format(pattern: String, cal: Calendar): String = if (cal == null) "" else format(pattern, cal.getTime)
 
 	/**
-	 * 日時フォーマット。
+	 * 数値フォーマット。
 	 *
 	 * @param pattern フォーマットパターン
-	 * @param opt 日時
+	 * @param num 数値
+	 * @return フォーマット済み文字列
+	 */
+	def format(pattern: String, num: Long): String = new DecimalFormat(pattern).format(num)
+
+	/**
+	 * 数値フォーマット。
+	 *
+	 * @param pattern フォーマットパターン
+	 * @param num 数値
+	 * @return フォーマット済み文字列
+	 */
+	def format(pattern: String, num: Double): String = new DecimalFormat(pattern).format(num)
+
+	/**
+	 * フォーマット。
+	 *
+	 * @param pattern フォーマットパターン
+	 * @param opt 値
 	 * @return フォーマット済み文字列
 	 */
 	def format(pattern: String, opt: Option[_]): String = (opt: @unchecked) match {
 		case None => ""
-		case Some(dt: Date) => format(pattern, dt)
-		case Some(c: Calendar) => format(pattern, c)
+		case Some(v: Date) => format(pattern, v)
+		case Some(v: Calendar) => format(pattern, v)
+		case Some(v: Int) => format(pattern, v)
+		case Some(v: Long) => format(pattern, v)
+		case Some(v: Float) => format(pattern, v)
+		case Some(v: Double) => format(pattern, v)
 	}
 }
