@@ -1,7 +1,6 @@
 package com.v_standard.vsp.compiler
 
-import com.v_standard.vsp.utils.State
-import java.io.File
+import com.typesafe.scalalogging.slf4j.Logging
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
@@ -9,7 +8,7 @@ import scala.io.Source
 /**
  * スクリプト変換オブジェクト。
  */
-object ScriptConverter {
+object ScriptConverter extends Logging {
 	/**
 	 * 変換。
 	 *
@@ -29,8 +28,10 @@ object ScriptConverter {
 
 		if (!context.currentToken.isEmpty) context.tokens += context.currentToken.get
 
-		val res = new StringBuilder
-		context.tokens.foreach(t => res.append(t.toScript))
-		(res.toString, context.textOnly)
+		val sb = new StringBuilder
+		context.tokens.foreach(t => sb.append(t.toScript))
+		val res = sb.toString
+		logger.debug("Script converted\n" + res)
+		(res, context.textOnly)
 	}
 }
