@@ -1,0 +1,13 @@
+<html>
+<body>
+	<form action="/profile/register" method="POST">
+		<%html.checkbox(chk1, { name: "chk1", value: "1" });%>
+		<%html.checkbox(chk2, { name: "chk2", value: "2" });%>
+
+		<%html.radio(rd1, { name: "rd1", value: "3", _default: true });%>
+		<%html.radio(rd1, { name: "rd1", value: "4" });%>
+
+		<%html.select(slt1, { name: "slt1", _list: options, _default: { "選択してください": "" }});%>
+	</form>
+</body>
+</html>
