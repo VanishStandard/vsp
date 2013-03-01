@@ -1,5 +1,6 @@
 package com.v_standard.vsp
 
+import com.typesafe.scalalogging.slf4j.Logging
 import java.nio.file.{FileSystems, FileVisitResult, Files, Path, SimpleFileVisitor}
 import java.nio.file.attribute.BasicFileAttributes
 import scala.actors.Actor.actor
@@ -11,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
  * テンプレート管理クラス。
  * テンプレート管理オブジェクトの基本クラス。
  */
-abstract class TemplateManager[T] {
+abstract class TemplateManager[T] extends Logging {
 	/** デフォルト設定ファイル */
 	val DEFAULT_CONFIG = "vsp.xml"
 

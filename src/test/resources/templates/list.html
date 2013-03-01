@@ -8,5 +8,8 @@
 <li id="%{list.apply(i).id()}">%{list.apply(i).name()}</li>
 <%}%>
 		</ul>
+%{vsp.format("yyyy-MM-dd <hh:mm:ss>", dt)}
+%{vsp.format("#,###,###", num)}
+%{html.br(crlf)}
 	</body>
 </html>

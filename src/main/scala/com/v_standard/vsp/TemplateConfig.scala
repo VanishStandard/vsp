@@ -27,8 +27,9 @@ object TemplateConfig {
 		using(ClassUtil.classLoader.getResourceAsStream(fileName)) { r =>
 			if (r == null) throw new FileNotFoundException(fileName)
 			val root = XML.load(r)
+			val tmplDir = StringUtil.trimWide((root \ "templateDir").text)
 			TemplateConfig(
-				new File(StringUtil.trimWide((root \ "templateDir").text)),
+				new File(if (tmplDir.isEmpty) "./" else tmplDir),
 				StringUtil.trimWide((root \ "sign").text)(0),
 				StringUtil.trimWide((root \ "checkPeriod").text).toInt,
 				StringUtil.trimWide((root \ "initCompileFilter").text))
