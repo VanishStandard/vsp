@@ -27,20 +27,24 @@ case class TemplateDataManager(config: TemplateConfig) {
 		if (!file.exists) throw new FileNotFoundException(fileName)
 		val key = file.getAbsolutePath
 		val td = templates.get(key)
-		val newSd = if (td == null ||
-			shouldReCompile(td.lastCheckDate, config.checkPeriod, file, td.scriptData.compileDate)) {
-			using(Source.fromFile(file)) { r =>
-				ScriptCompiler.compile(r, TokenParseConfig(config.templateDir, config.sign))
-			}
-		} else td.scriptData
-		templates.put(key, TemplateData(newSd, new Date))
-		newSd
+		val newTd = if (td == null || shouldCheckModify(td.lastCheckDate, config.checkPeriod)) {
+			if (td == null || shouldReCompile(file, td.scriptData.compileDate)) {
+				TemplateData(using(Source.fromFile(file)) { r =>
+					ScriptCompiler.compile(r, TokenParseConfig(config.templateDir, config.sign))
+				}, new Date)
+			} else TemplateData(td.scriptData, new Date)
+		} else td
+
+		templates.put(key, newTd)
+		newTd.scriptData
 	}
 
 
 	/**
 	 * 更新日付チェックが必要か。
 	 *
+	 * @param checkDate 最終チェック日時
+	 * @param checkPeriod チェック期間
 	 * @return 必要なら true
 	 */
 	private def shouldCheckModify(checkDate: Date, checkPeriod: Int): Boolean =
@@ -49,8 +53,9 @@ case class TemplateDataManager(config: TemplateConfig) {
 	/**
 	 * 再コンパイルが必要か。
 	 *
+	 * @param file テンプレートファイル
+	 * @param コンパイル日時
 	 * @return 必要なら true
 	 */
-	private def shouldReCompile(checkDate: Date, checkPeriod: Int, file: File, compiledDate: Date): Boolean =
-		if (!shouldCheckModify(checkDate, checkPeriod)) false else file.lastModified > compiledDate.getTime
+	private def shouldReCompile(file: File, compiledDate: Date): Boolean = file.lastModified > compiledDate.getTime
 }
