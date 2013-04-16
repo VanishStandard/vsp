@@ -42,7 +42,7 @@ class TemplateConfigSpec extends FunSpec with ShouldMatchers {
 		describe("テンプレートディレクトリ省略") {
 			it("空文字としてカレントディレクトリを返す") {
 				val config = TemplateConfig("vsp_read_classpath.xml")
-				config.templateDir.getAbsolutePath should be (new File("").getAbsolutePath)
+				config.templateDir.getAbsolutePath should be (new File("./").getAbsolutePath)
 			}
 		}
 	}
