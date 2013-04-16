@@ -1,6 +1,8 @@
 package com.v_standard.vsp
 
+import com.typesafe.scalalogging.slf4j.Logging
 import com.v_standard.vsp.compiler.{ScriptCompiler, ScriptData, TokenParseConfig}
+import com.v_standard.vsp.utils.{ClassUtil, ResourceUtil}
 import com.v_standard.vsp.utils.ResourceUtil.using
 import java.io.{File, FileNotFoundException}
 import java.util.Date
@@ -11,7 +13,7 @@ import scala.io.Source
 /**
  * テンプレートデータ管理クラス。
  */
-case class TemplateDataManager(config: TemplateConfig) {
+case class TemplateDataManager(config: TemplateConfig) extends Logging {
 	/** テンプレートデータマップ */
 	private val templates = new ConcurrentHashMap[String, TemplateData]()
 
@@ -24,12 +26,12 @@ case class TemplateDataManager(config: TemplateConfig) {
 	 */
 	def getScriptData(fileName: String): ScriptData = {
 		val file = new File(config.templateDir, fileName)
-		if (!file.exists) throw new FileNotFoundException(fileName)
 		val key = file.getAbsolutePath
+		logger.debug("Template data key: " + key)
 		val td = templates.get(key)
 		val newTd = if (td == null || shouldCheckModify(td.lastCheckDate, config.checkPeriod)) {
 			if (td == null || shouldReCompile(file, td.scriptData.compileDate)) {
-				TemplateData(using(Source.fromFile(file)) { r =>
+				TemplateData(using(ResourceUtil.getSource(file)) { r =>
 					ScriptCompiler.compile(r, TokenParseConfig(config.templateDir, config.sign))
 				}, new Date)
 			} else TemplateData(td.scriptData, new Date)

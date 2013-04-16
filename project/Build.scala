@@ -20,6 +20,7 @@ object ApplicationBuild extends Build {
 			publishLocalConfiguration <<= (packagedArtifacts, deliverLocal, ivyLoggingLevel) map {
 				(arts, _, level) => new PublishConfiguration(None, "dotM2", arts, List[String](), level)
 			},
+			unmanagedBase in Test <<= baseDirectory { base => base / "src/test/lib" },
 			libraryDependencies ++= Seq(
 				"com.typesafe" %% "scalalogging-slf4j" % "1.0.1",
 				"org.slf4j" % "slf4j-api" % "1.7.2",

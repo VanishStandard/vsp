@@ -1,9 +1,9 @@
 package com.v_standard.vsp.compiler
 
 import com.v_standard.vsp.script.ScriptDefine
+import com.v_standard.vsp.utils.ResourceUtil
 import com.v_standard.vsp.utils.ResourceUtil.using
 import java.io.File
-import scala.io.Source
 
 
 /**
@@ -84,7 +84,7 @@ class IncludeToken(context: ScriptConverterContext) extends Token {
 		if (ScriptDefine.MAX_INCLUDE <= context.deep)
 			throw new IllegalStateException("Failed to include. count(" + context.deep + ")")
 
-		using(Source.fromFile(new File(context.config.baseDir.getPath, tokenStr.toString.trim))) { r =>
+		using(ResourceUtil.getSource(new File(context.config.baseDir.getPath, tokenStr.toString.trim))) { r =>
 			val res = ScriptConverter.convert(r, context.config, context.deep + 1)
 			if (!res._2) context.textOnly = false
 			res._1

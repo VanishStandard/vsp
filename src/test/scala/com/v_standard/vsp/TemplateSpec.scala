@@ -10,6 +10,7 @@ import org.scalatest.matchers.ShouldMatchers
  */
 class TemplateSpec extends FunSpec with ShouldMatchers {
 	describe("build") {
+/*
 		describe("正常なフォーマットファイル") {
 			it("展開された文字列を返す") {
 				DefaultTemplateManager.init("vsp_success2.xml")
@@ -75,6 +76,27 @@ abc<br />efg
 		<select name="slt1"><option value="">選択してください</option><option value="1">北海道</option><option value="2">青森県</option></select>
 	</form>
 </body>
+</html>
+""")
+			}
+		}
+ */
+		describe("JAR に含まれるファイル") {
+			it("展開された文字列を返す") {
+				DefaultTemplateManager.init("vsp_read_classpath.xml")
+				val template = DefaultTemplateManager.template("vsp_read_classpath.xml")
+				template.addVar("fileName", "simple.html")
+
+				template.build("templates2/simple.html") should be ("""<html>
+	<head>
+		<title>Template in jar</title>
+
+	</head>
+
+	<body>
+		Template in jar.<br />
+		simple.html
+	</body>
 </html>
 """)
 			}
