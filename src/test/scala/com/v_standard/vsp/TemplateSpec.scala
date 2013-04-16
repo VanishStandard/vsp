@@ -79,5 +79,26 @@ abc<br />efg
 """)
 			}
 		}
+
+		describe("JAR に含まれるファイル") {
+			it("展開された文字列を返す") {
+				DefaultTemplateManager.init("vsp_read_classpath.xml")
+				val template = DefaultTemplateManager.template("vsp_read_classpath.xml")
+				template.addVar("fileName", "simple.html")
+
+				template.build("templates2/simple.html") should be ("""<html>
+	<head>
+		<title>Template in jar</title>
+
+	</head>
+
+	<body>
+		Template in jar.<br />
+		simple.html
+	</body>
+</html>
+""")
+			}
+		}
 	}
 }
