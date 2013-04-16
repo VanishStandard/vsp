@@ -10,7 +10,6 @@ import org.scalatest.matchers.ShouldMatchers
  */
 class TemplateSpec extends FunSpec with ShouldMatchers {
 	describe("build") {
-/*
 		describe("正常なフォーマットファイル") {
 			it("展開された文字列を返す") {
 				DefaultTemplateManager.init("vsp_success2.xml")
