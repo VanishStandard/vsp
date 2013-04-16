@@ -31,7 +31,7 @@ object ScriptConverter extends Logging {
 		val sb = new StringBuilder
 		context.tokens.foreach(t => sb.append(t.toScript))
 		val res = sb.toString
-		logger.debug("Script converted\n" + res)
+		logger.trace("Script converted\n" + res)
 		(res, context.textOnly)
 	}
 }
