@@ -11,5 +11,9 @@
 %{vsp.format("yyyy-MM-dd <hh:mm:ss>", dt)}
 %{vsp.format("#,###,###", num)}
 %{html.br(crlf)}
+<ul><%forseq (list, function(obj, i) { %>
+<li id="%{obj.id()}">%{i} - %{obj.name()}</li>
+<%});%>
+		</ul>
 	</body>
 </html>

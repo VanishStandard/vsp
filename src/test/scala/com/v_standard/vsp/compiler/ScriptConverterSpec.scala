@@ -42,7 +42,7 @@ print("<html>\n\t<body>\n\t\t");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
 print("\n\t</body>\n</html>");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(var2));
-""")
+""" + ScriptConverter.FUNC_FORSEQ)
 
 				res._2 should be (false)
 			}
@@ -62,7 +62,7 @@ print("<html>\n\t<body>\n\t\t");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
 print("\n\t</body>\n</html>");
 }
-""")
+""" + ScriptConverter.FUNC_FORSEQ)
 
 				res._2 should be (false)
 			}
@@ -90,7 +90,7 @@ print("</title>\n");
 print("\n\t<body>\n\t\t");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
 print("\n\t</body>\n</html>");
-""")
+""" + ScriptConverter.FUNC_FORSEQ)
 
 					res._2 should be (false)
 				}

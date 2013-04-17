@@ -9,6 +9,13 @@ import scala.io.Source
  * スクリプト変換オブジェクト。
  */
 object ScriptConverter extends Logging {
+	val FUNC_FORSEQ = """
+function forseq(list, func) {
+	var len = list.length();
+	for (var i = 0; i < len; ++i) func(list.apply(i), i);
+}
+"""
+
 	/**
 	 * 変換。
 	 *
@@ -30,6 +37,7 @@ object ScriptConverter extends Logging {
 
 		val sb = new StringBuilder
 		context.tokens.foreach(t => sb.append(t.toScript))
+		if (!context.textOnly && deep == 0) sb.append(FUNC_FORSEQ)
 		val res = sb.toString
 		logger.trace("Script converted\n" + res)
 		(res, context.textOnly)
