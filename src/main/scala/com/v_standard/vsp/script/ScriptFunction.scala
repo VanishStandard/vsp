@@ -45,7 +45,7 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 		case s: String => StringUtil.htmlEscape(s)
 		case oc: OutputConverter => oc.mkString
 		case d: Double => StringUtil.htmlEscape(new DecimalFormat("0.############").format(d))
-		case ref => println(ref.getClass); StringUtil.htmlEscape(ref.toString)
+		case ref => StringUtil.htmlEscape(ref.toString)
 	}
 
 
