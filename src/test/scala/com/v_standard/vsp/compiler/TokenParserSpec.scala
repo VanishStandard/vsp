@@ -302,6 +302,22 @@ class TokenParserSpec extends FunSpec with ShouldMatchers {
 			}
 		}
 
+		describe("出力モード連続") {
+			val context = ScriptConverterContext(TokenParseConfig(null, '%'))
+			TokenParser.exec(Source.fromString("""<html>
+	<body>
+		%{abc}%{efg}
+	</body>
+</html>"""), context)
+
+			it("textOnly は false") {
+				context.textOnly should be (false)
+			}
+			it("tokens は 4") {
+				context.tokens should have size(4)
+			}
+		}
+
 		describe("構文モード") {
 			val context = ScriptConverterContext(TokenParseConfig(null, '%'))
 			TokenParser.exec(Source.fromString("""<html>
@@ -320,6 +336,26 @@ class TokenParserSpec extends FunSpec with ShouldMatchers {
 			}
 		}
 
+		describe("構文モード連続") {
+			val context = ScriptConverterContext(TokenParseConfig(null, '%'))
+			TokenParser.exec(Source.fromString("""<html>
+	<body>
+		<% if (abc > 0) { %>
+			abc
+		<% } %><% if (efg > 0) { %>
+			efg
+		<% } %>
+	</body>
+</html>"""), context)
+
+			it("textOnly は false") {
+				context.textOnly should be (false)
+			}
+			it("tokens は 8") {
+				context.tokens should have size(8)
+			}
+		}
+
 		describe("インクルードモード") {
 			val context = ScriptConverterContext(TokenParseConfig(null, '%'))
 			TokenParser.exec(Source.fromString("""<html>
@@ -333,6 +369,22 @@ class TokenParserSpec extends FunSpec with ShouldMatchers {
 			}
 			it("tokens は 3") {
 				context.tokens should have size(3)
+			}
+		}
+
+		describe("インクルードモード連続") {
+			val context = ScriptConverterContext(TokenParseConfig(null, '%'))
+			TokenParser.exec(Source.fromString("""<html>
+	<body>
+		<%/common/header.html %><%/common/footer.html %>
+	</body>
+</html>"""), context)
+
+			it("textOnly は false") {
+				context.textOnly should be (true)
+			}
+			it("tokens は 4") {
+				context.tokens should have size(4)
 			}
 		}
 	}

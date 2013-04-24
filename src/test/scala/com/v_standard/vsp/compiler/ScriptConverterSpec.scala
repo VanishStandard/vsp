@@ -32,7 +32,7 @@ class ScriptConverterSpec extends FunSpec with ShouldMatchers {
 			it("escape 経由の print 文") {
 				val res = ScriptConverter.convert(Source.fromString("""%{var1}<html>
 	<body>
-		%{abc}
+		%{abc}%{efg}
 	</body>
 </html>%{var2}"""), TokenParseConfig(null, '%'))
 
@@ -40,6 +40,7 @@ class ScriptConverterSpec extends FunSpec with ShouldMatchers {
 """print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(var1));
 print("<html>\n\t<body>\n\t\t");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(efg));
 print("\n\t</body>\n</html>");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(var2));
 """ + ScriptConverter.FUNC_FORSEQ)

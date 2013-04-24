@@ -111,4 +111,15 @@ case class ScriptConverterContext(config: TokenParseConfig, deep: Int = 0) {
 		}
 		buffer.clear
 	}
+
+	/**
+	 * トークン終了。
+	 */
+	def endToken() {
+		currentToken.foreach { t =>
+			tokens += t
+			currentToken = None
+		}
+		buffer.clear
+	}
 }

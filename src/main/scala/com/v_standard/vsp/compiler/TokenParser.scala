@@ -60,7 +60,9 @@ object TokenParser {
 	object StatePrintMode extends State[Char, ScriptConverterContext] {
 		override def doEvent(event: Char, context: ScriptConverterContext) = {
 			event match {
-				case CURLY_CLOSE => StateStart
+				case CURLY_CLOSE =>
+					context.endToken()
+					StateStart
 				case _ =>
 					context.addPrintToken(event)
 					StatePrintMode
@@ -126,7 +128,7 @@ object TokenParser {
 		override def doEvent(event: Char, context: ScriptConverterContext) = {
 			event match {
 				case CHEVRON_CLOSE =>
-					context.buffer.clear
+					context.endToken()
 					StateStart
 				case _ =>
 					context.addSyntaxToken(event)
@@ -158,7 +160,7 @@ object TokenParser {
 		override def doEvent(event: Char, context: ScriptConverterContext) = {
 			event match {
 				case CHEVRON_CLOSE =>
-					context.buffer.clear
+					context.endToken()
 					StateStart
 				case _ =>
 					context.addIncludeToken(event)
