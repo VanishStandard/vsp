@@ -40,15 +40,13 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 	 * @param str 文字列
 	 * @return 文字列
 	 */
-	def escape(str: String): String = StringUtil.htmlEscape(str)
-
-	/**
-	 * エスケープ無し文字列取得。
-	 *
-	 * @param 出力用変換オブジェクト
-	 * @return 文字列
-	 */
-	def escape(oc: OutputConverter): String = oc.mkString
+	def escape(target: Any): String = target match {
+		case null => ""
+		case s: String => StringUtil.htmlEscape(s)
+		case oc: OutputConverter => oc.mkString
+		case d: Double => StringUtil.htmlEscape(new DecimalFormat("0.############").format(d))
+		case ref => StringUtil.htmlEscape(ref.toString)
+	}
 
 
 	/**

@@ -33,6 +33,13 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 					sf.escape(sf.raw("<body>'A&B'")) should be ("<body>'A&B'")
 				}
 			}
+
+			describe("null を与えた場合") {
+				it("空文字を返す") {
+
+					sf.escape(null) should be ("")
+				}
+			}
 		}
 	}
 

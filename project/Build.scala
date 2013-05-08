@@ -4,7 +4,7 @@ import Keys._
 
 object ApplicationBuild extends Build {
 	val appName = "vsp"
-	val appVersion = "0.4.0"
+	val appVersion = "0.5.0"
 	val appOrganization = "com.v_standard.vsp"
 	val buildScalaVersion = "2.10.0"
 
@@ -21,6 +21,11 @@ object ApplicationBuild extends Build {
 				(arts, _, level) => new PublishConfiguration(None, "dotM2", arts, List[String](), level)
 			},
 			unmanagedBase in Test <<= baseDirectory { base => base / "src/test/lib" },
+			testOptions += Tests.Setup(cl =>
+				cl.loadClass("org.slf4j.LoggerFactory").
+					getMethod("getLogger",cl.loadClass("java.lang.String")).
+					invoke(null,"ROOT")
+			),
 			libraryDependencies ++= Seq(
 				"com.typesafe" %% "scalalogging-slf4j" % "1.0.1",
 				"org.slf4j" % "slf4j-api" % "1.7.2",
