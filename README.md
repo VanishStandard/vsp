@@ -17,7 +17,7 @@ Scala で書かれたテンプレートエンジン。
 
 ## 環境
 
-Scala 2.1x
+Scala 2.10.X
 
 ## セットアップ
 
@@ -25,7 +25,7 @@ sbt
 ```scala
 sbtresolvers += "VanishStandard Maven Repository" at "http://vanishstandard.github.com/mvn-repo"
 
-libraryDependencies += "com.v_standard.vsp" %% "vsp" % "x.x.x"
+libraryDependencies += "com.v_standard.vsp" %% "vsp" % "X.Y.Z"
 ```
 
 ## 使い方
