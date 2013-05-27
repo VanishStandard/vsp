@@ -93,7 +93,7 @@ template1/template.tmpl
 
 <% forseq(list, function(num, i) { %>
 %{i}: %{num}
-<% } %>
+<% }); %>
 ```
 
 
