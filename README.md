@@ -14,6 +14,7 @@ Scala で書かれたテンプレートエンジン。
 * テンプレート毎の記述の習得が面倒な方
 * それなりのスピードは欲しい方
 * Web で使用した場合に、JavaScript の記述がサーバ側なのかクライアント側なのかで混乱しない方
+* テンプレート内で直接 DB に接続しない方
 
 ## 環境
 
@@ -91,9 +92,9 @@ template1/template.tmpl
 
 作成日: %{vsp.format("yyyy/MM/dd HH:mm:ss", dt)}
 
-<% forseq(list, function(num, i) { %>
-%{i}: %{num}
-<% }); %>
+<% for (var i = 0; i < list.length(); ++i) { %>
+%{i}: %{list.apply(i)}
+<% } %>
 ```
 
 
@@ -113,6 +114,15 @@ template1/template.tmpl
 
 4: 8
 
+```
+
+## 組み込み JavaScript 関数
+forseq
+> Scala の Seq ループ用ヘルパー関数
+```text
+<% forseq(list, function(num, i)) { %>
+%{i}: %{num}
+<% }); %>
 ```
 
 ## ライセンス
