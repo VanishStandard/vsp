@@ -120,7 +120,7 @@ template1/template.tmpl
 forseq
 > Scala の Seq ループ用ヘルパー関数
 ```text
-<% forseq(list, function(num, i)) { %>
+<% forseq(list, function(num, i) { %>
 %{i}: %{num}
 <% }); %>
 ```
