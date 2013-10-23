@@ -68,7 +68,7 @@ abc<br />efg
 				template.addVar("chk2", "2")
 				template.addVar("rd1", None)
 				template.addVar("slt1", None)
-				template.addVar("options", Array(("北海道" -> "1"), ("青森県" -> "2")))
+				template.addVar("options", Array(("1" -> "北海道"), ("2" -> "青森県")))
 
 				case class Obj(id: Int, name: String)
 				template.build("form.html") should be ("""<html>

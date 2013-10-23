@@ -217,13 +217,13 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	/**
 	 * <option> タグ生成。
 	 *
-	 * @param label ラベル
 	 * @param value 値
+	 * @param label ラベル
 	 * @param currentValue 現在値
 	 * @param xhtml XHTML なら true
 	 * @return タグ
 	 */
-	private def optionTag(label: String, value: String, currentValue: String, xhtml: Boolean): String = {
+	private def optionTag(value: String, label: String, currentValue: String, xhtml: Boolean): String = {
 		val tag = new StringBuilder(s"""<option value="$value"""")
 		if (value == currentValue) {
 			if (xhtml) tag.append(" selected=\"selected\"")
