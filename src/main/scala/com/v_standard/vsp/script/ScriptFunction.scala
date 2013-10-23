@@ -29,19 +29,25 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 	/**
 	 * エスケープ無し文字列保持オブジェクト取得。
 	 *
-	 * @param str 文字列
+	 * @param target 対象
 	 * @return Raw オブジェクト
 	 */
-	def raw(str: String): Raw = Raw(str)
+	def raw(target: Any): Raw = Raw(target match {
+		case null => ""
+		case o: Option[_] => o.map(_.toString).getOrElse("")
+		case s: String => s
+		case ref => ref.toString
+	})
 
 	/**
 	 * エスケープ文字列取得。
 	 *
-	 * @param str 文字列
+	 * @param target 対象
 	 * @return 文字列
 	 */
 	def escape(target: Any): String = target match {
 		case null => ""
+		case o: Option[_] => o.map(x => StringUtil.htmlEscape(x.toString)).getOrElse("")
 		case s: String => StringUtil.htmlEscape(s)
 		case oc: OutputConverter => oc.mkString
 		case d: Double => StringUtil.htmlEscape(new DecimalFormat("0.############").format(d))

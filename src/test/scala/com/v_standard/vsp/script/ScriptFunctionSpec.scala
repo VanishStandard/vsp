@@ -18,6 +18,20 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 			}
 		}
 
+		describe("Some を与えた場合") {
+			it("Row を返す") {
+
+				sf.raw(Some("abcd")) should be (Raw("abcd"))
+			}
+		}
+
+		describe("None を与えた場合") {
+			it("Row を返す") {
+
+				sf.raw(None) should be (Raw(""))
+			}
+		}
+
 		describe("escape") {
 			val sf = new ScriptFunction(null)
 			describe("文字を与えた場合") {
@@ -38,6 +52,20 @@ class ScriptFunctionSpec extends FunSpec with ShouldMatchers {
 				it("空文字を返す") {
 
 					sf.escape(null) should be ("")
+				}
+			}
+
+			describe("Some を与えた場合") {
+				it("値 を返す") {
+
+					sf.escape(Some(5)) should be ("5")
+				}
+			}
+
+			describe("None を与えた場合") {
+				it("空文字を返す") {
+
+					sf.escape(None) should be ("")
 				}
 			}
 		}
