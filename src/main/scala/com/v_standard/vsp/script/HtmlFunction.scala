@@ -201,7 +201,10 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 */
 	private def convertOptionList(param: NativeObject): Seq[(String, String)] = {
 		param.get(PARAM_LIST) match {
-			case lst: NativeObject => lst.entrySet.asScala.map(e => (e.getKey.toString, e.getValue.toString)).toSeq.reverse
+			case lst: NativeArray => lst.asScala.map { l =>
+				val e = l.asInstanceOf[NativeObject].entrySet.asScala.head
+				(e.getKey.toString, e.getValue.toString)
+			}.toSeq
 			case lst: Seq[_] => lst.map {
 				case (l, v) => (l.toString, v.toString)
 			}
