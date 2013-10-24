@@ -47,7 +47,7 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 	 */
 	def escape(target: Any): String = target match {
 		case null => ""
-		case o: Option[_] => o.map(x => StringUtil.htmlEscape(x.toString)).getOrElse("")
+		case o: Option[_] => o.map(x => escape(x)).getOrElse("")
 		case s: String => StringUtil.htmlEscape(s)
 		case oc: OutputConverter => oc.mkString
 		case d: Double => StringUtil.htmlEscape(new DecimalFormat("0.############").format(d))

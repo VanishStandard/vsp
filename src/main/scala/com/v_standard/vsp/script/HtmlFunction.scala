@@ -189,8 +189,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 */
 	private def convertValue(obj: Any): String = obj match {
 		case null => null
-		case None => null
-		case Some(v) => v.toString
+		case v: Option[_] => v.map(x => convertValue(x)).getOrElse(null)
 		case v: Double => new DecimalFormat("0.############").format(v)
 		case v => v.toString
 	}
