@@ -70,6 +70,22 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 					actual should be ("""<input type="checkbox" value="1" checked="checked" />""")
 				}
 			}
+
+			describe("現在値が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.checkboxTag(1, createParam("param = { value: \"1\" }"))
+					actual should be ("""<input type="checkbox" value="1" checked>""")
+				}
+			}
+
+			describe("value が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.checkboxTag("1", createParam("param = { value: 1 }"))
+					actual should be ("""<input type="checkbox" value="1" checked>""")
+				}
+			}
 		}
 
 		describe("その他パラメータ") {
@@ -126,6 +142,22 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 					val html = new HtmlFunctionWrapper(true)
 					val actual = html.radioTag("1", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="radio" value="1" checked="checked" />""")
+				}
+			}
+
+			describe("現在値が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.radioTag(1, createParam("param = { value: \"1\" }"))
+					actual should be ("""<input type="radio" value="1" checked>""")
+				}
+			}
+
+			describe("value が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.radioTag("1", createParam("param = { value: 1 }"))
+					actual should be ("""<input type="radio" value="1" checked>""")
 				}
 			}
 		}

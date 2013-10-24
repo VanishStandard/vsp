@@ -2,6 +2,7 @@ package com.v_standard.vsp.script
 
 import com.v_standard.vsp.utils.StringUtil
 import java.io.ByteArrayOutputStream
+import java.text.DecimalFormat
 import sun.org.mozilla.javascript.internal.NativeArray
 import sun.org.mozilla.javascript.internal.NativeObject
 import scala.collection.JavaConverters._
@@ -76,9 +77,9 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"checkbox\"").append(createAttrByParam(param))
 		val xhtml = isXhtml
-		val currentValue = convertCurrentValue(obj)
+		val currentValue = convertValue(obj)
 
-		if (param.get(PARAM_VALUE) == currentValue) {
+		if (convertValue(param.get(PARAM_VALUE)) == currentValue) {
 			if (xhtml) tag.append(" checked=\"checked\"")
 			else tag.append(" checked")
 		}
@@ -99,10 +100,10 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"radio\"").append(createAttrByParam(param))
 		val xhtml = isXhtml
-		val currentValue = convertCurrentValue(obj)
+		val currentValue = convertValue(obj)
 
 		if ((currentValue == null || currentValue == "") && getBoolean(param, PARAM_DEFAULT, false) ||
-			param.get(PARAM_VALUE) == currentValue) {
+			convertValue(param.get(PARAM_VALUE)) == currentValue) {
 			if (xhtml) tag.append(" checked=\"checked\"")
 			else tag.append(" checked")
 		}
@@ -123,7 +124,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		checkRequiredParam(param, List(PARAM_LIST))
 		val tag = new StringBuilder("<select").append(createAttrByParam(param)).append(">")
 		val xhtml = isXhtml
-		val currentValue = convertCurrentValue(obj)
+		val currentValue = convertValue(obj)
 
 		if (param.containsKey(PARAM_DEFAULT)) {
 			val entries = param.get(PARAM_DEFAULT).asInstanceOf[NativeObject].entrySet
@@ -162,7 +163,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		param.entrySet.asScala.foreach { e =>
 			val key = e.getKey.toString
 			if (!key.startsWith("_"))
-				attr.append(" "). append(key).append("=\"").append(StringUtil.htmlEscape(e.getValue.toString)).append("\"")
+				attr.append(" "). append(key).append("=\"").append(StringUtil.htmlEscape(convertValue(e.getValue))).append("\"")
 		}
 		attr.toString
 	}
@@ -181,15 +182,16 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	}
 
 	/**
-	 * 現在値を文字列に変換
+	 * 値を文字列に変換
 	 *
-	 * @param 現在値
+	 * @param 値
 	 * @return 変換後の文字列
 	 */
-	private def convertCurrentValue(obj: Any): String = obj match {
+	private def convertValue(obj: Any): String = obj match {
 		case null => null
 		case None => null
 		case Some(v) => v.toString
+		case v: Double => new DecimalFormat("0.############").format(v)
 		case v => v.toString
 	}
 
