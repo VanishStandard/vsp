@@ -26,10 +26,15 @@ object ApplicationBuild extends Build {
 					getMethod("getLogger",cl.loadClass("java.lang.String")).
 					invoke(null,"ROOT")
 			),
+			resolvers ++= Seq(
+				Resolver.mavenLocal,
+				"VanishStandard Maven Repository" at "http://vanishstandard.github.com/mvn-repo"
+			),
 			libraryDependencies ++= Seq(
 				"com.typesafe" %% "scalalogging-slf4j" % "1.0.1",
 				"org.slf4j" % "slf4j-api" % "1.7.2",
 				"ch.qos.logback" % "logback-classic" % "1.0.9",
+				"com.v_standard.utils" %% "utils" % "0.1.0",
 				"org.scalatest" %% "scalatest" % "1.9.1" % "test"
 			),
 			libraryDependencies <+= scalaVersion {
