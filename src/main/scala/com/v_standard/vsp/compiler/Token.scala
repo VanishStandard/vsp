@@ -1,8 +1,8 @@
 package com.v_standard.vsp.compiler
 
 import com.v_standard.vsp.script.ScriptDefine
-import com.v_standard.vsp.utils.ResourceUtil
-import com.v_standard.vsp.utils.ResourceUtil.using
+import com.v_standard.utils.ResourceUtil
+import com.v_standard.utils.ResourceUtil.using
 import java.io.File
 
 

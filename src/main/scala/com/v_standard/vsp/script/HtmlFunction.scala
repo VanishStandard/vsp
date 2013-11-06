@@ -1,6 +1,6 @@
 package com.v_standard.vsp.script
 
-import com.v_standard.vsp.utils.StringUtil
+import com.v_standard.utils.HtmlUtil
 import java.io.ByteArrayOutputStream
 import java.text.DecimalFormat
 import sun.org.mozilla.javascript.internal.NativeArray
@@ -52,7 +52,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 * @return Raw オブジェクト
 	 */
 	def br(str: String): Raw = {
-	 Raw(StringUtil.crlf2br(StringUtil.htmlEscape(str)))
+	 Raw(HtmlUtil.crlf2br(HtmlUtil.escape(str)))
 	}
 
 	/**
@@ -62,7 +62,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 * @return Raw オブジェクト
 	 */
 	def br(oc: OutputConverter): Raw = {
-	 Raw(StringUtil.crlf2br(oc.mkString))
+	 Raw(HtmlUtil.crlf2br(oc.mkString))
 	}
 
 
@@ -163,7 +163,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		param.entrySet.asScala.foreach { e =>
 			val key = e.getKey.toString
 			if (!key.startsWith("_"))
-				attr.append(" "). append(key).append("=\"").append(StringUtil.htmlEscape(convertValue(e.getValue))).append("\"")
+				attr.append(" "). append(key).append("=\"").append(HtmlUtil.escape(convertValue(e.getValue))).append("\"")
 		}
 		attr.toString
 	}

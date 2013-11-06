@@ -1,6 +1,6 @@
 package com.v_standard.vsp.script
 
-import com.v_standard.vsp.utils.StringUtil
+import com.v_standard.utils.HtmlUtil
 import java.io.ByteArrayOutputStream
 import java.text.{DecimalFormat, SimpleDateFormat}
 import java.util.{Calendar, Date}
@@ -48,10 +48,10 @@ class ScriptFunction(val out: ByteArrayOutputStream) {
 	def escape(target: Any): String = target match {
 		case null => ""
 		case o: Option[_] => o.map(x => escape(x)).getOrElse("")
-		case s: String => StringUtil.htmlEscape(s)
+		case s: String => HtmlUtil.escape(s)
 		case oc: OutputConverter => oc.mkString
-		case d: Double => StringUtil.htmlEscape(new DecimalFormat("0.############").format(d))
-		case ref => StringUtil.htmlEscape(ref.toString)
+		case d: Double => HtmlUtil.escape(new DecimalFormat("0.############").format(d))
+		case ref => HtmlUtil.escape(ref.toString)
 	}
 
 

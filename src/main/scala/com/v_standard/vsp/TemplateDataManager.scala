@@ -2,8 +2,8 @@ package com.v_standard.vsp
 
 import com.typesafe.scalalogging.slf4j.Logging
 import com.v_standard.vsp.compiler.{ScriptCompiler, ScriptData, TokenParseConfig}
-import com.v_standard.vsp.utils.{ClassUtil, ResourceUtil}
-import com.v_standard.vsp.utils.ResourceUtil.using
+import com.v_standard.utils.ResourceUtil
+import com.v_standard.utils.ResourceUtil.using
 import java.io.{File, FileNotFoundException}
 import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
