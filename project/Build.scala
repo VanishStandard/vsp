@@ -6,7 +6,7 @@ object ApplicationBuild extends Build {
 	val appName = "vsp"
 	val appVersion = "0.6.0-SNAPSHOT"
 	val appOrganization = "com.v_standard.vsp"
-	val buildScalaVersion = "2.10.0"
+	val buildScalaVersion = "2.10.3"
 
 	lazy val root = Project(id = appName,
 		base = file("."),
