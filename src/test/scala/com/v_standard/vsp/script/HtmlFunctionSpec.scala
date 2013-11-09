@@ -22,7 +22,7 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 		val engine = new ScriptEngineManager().getEngineByName("JavaScript")
 		binds.foreach(t => engine.put(t._1, t._2))
 		engine.eval("param = " + script)
-	engine.get("param").asInstanceOf[NativeObject]
+		engine.get("param").asInstanceOf[NativeObject]
 	}
 
 
@@ -68,6 +68,22 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 					val html = new HtmlFunctionWrapper(true)
 					val actual = html.checkboxTag("1", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="checkbox" value="1" checked="checked" />""")
+				}
+			}
+
+			describe("現在値が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.checkboxTag(1, createParam("param = { value: \"1\" }"))
+					actual should be ("""<input type="checkbox" value="1" checked>""")
+				}
+			}
+
+			describe("value が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.checkboxTag("1", createParam("param = { value: 1 }"))
+					actual should be ("""<input type="checkbox" value="1" checked>""")
 				}
 			}
 		}
@@ -126,6 +142,22 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 					val html = new HtmlFunctionWrapper(true)
 					val actual = html.radioTag("1", createParam("param = { value: \"1\" }"))
 					actual should be ("""<input type="radio" value="1" checked="checked" />""")
+				}
+			}
+
+			describe("現在値が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.radioTag(1, createParam("param = { value: \"1\" }"))
+					actual should be ("""<input type="radio" value="1" checked>""")
+				}
+			}
+
+			describe("value が数値") {
+				it("選択される") {
+					val html = new HtmlFunctionWrapper
+					val actual = html.radioTag("1", createParam("param = { value: 1 }"))
+					actual should be ("""<input type="radio" value="1" checked>""")
 				}
 			}
 		}
@@ -195,7 +227,7 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 				describe("HTML") {
 					it("HTML タグを返す") {
 						val html = new HtmlFunctionWrapper
-						val actual = html.selectTag("2", createParam("param = { _list: {a: '1', b: '2', c: '3'} }"))
+						val actual = html.selectTag("2", createParam("param = { _list: [{1: 'a'}, {2: 'b'}, {3: 'c'}] }"))
 						actual should be ("""<select><option value="1">a</option><option value="2" selected>b</option>""" +
 							"""<option value="3">c</option></select>""")
 					}
@@ -205,7 +237,7 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 					it("XHTML タグを返す") {
 						val html = new HtmlFunctionWrapper(true)
 						val actual = html.selectTag("2",
-							createParam("param = { _list: {a: '1', b: '2', c: '3'} }"))
+							createParam("param = { _list: [{1: 'a'}, {2: 'b'}, {3: 'c'}] }"))
 						actual should be ("""<select><option value="1">a</option>""" +
 							"""<option value="2" selected="selected">b</option><option value="3">c</option></select>""")
 					}
@@ -218,7 +250,7 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 				it("HTML タグを返す") {
 					val html = new HtmlFunctionWrapper
 					val actual = html.selectTag("2", createParam("param = { _list: options }", ("options",
-						List("a" -> "1", "b" -> "2", "c" -> "3"))))
+						List("1" -> "a", "2" -> "b", "3" -> "c"))))
 					actual should be ("""<select><option value="1">a</option><option value="2" selected>b</option>""" +
 						"""<option value="3">c</option></select>""")
 				}
@@ -230,7 +262,7 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 				it("HTML タグを返す") {
 					val html = new HtmlFunctionWrapper
 					val actual = html.selectTag("2", createParam("param = { _list: options }", ("options",
-						Array("a" -> "1", "b" -> "2", "c" -> "3"))))
+						Array("1" -> "a", "2" -> "b", "3" -> "c"))))
 					actual should be ("""<select><option value="1">a</option><option value="2" selected>b</option>""" +
 						"""<option value="3">c</option></select>""")
 				}
@@ -241,7 +273,7 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 			describe("HTML") {
 				it("HTML タグを返す") {
 					val html = new HtmlFunctionWrapper
-					val actual = html.selectTag("2", createParam("param = { _list: {a: '1', b: '2', c: '3'}, " +
+					val actual = html.selectTag("2", createParam("param = { _list: [{1: 'a'}, {2: 'b'}, {3: 'c'}], " +
 						"""name: "slt", id: "slt1", "class": "xxx" }"""))
 					actual should be ("""<select name="slt" id="slt1" class="xxx"><option value="1">a</option>""" +
 						"""<option value="2" selected>b</option><option value="3">c</option></select>""")
@@ -252,8 +284,8 @@ class HtmlFunctionSpec extends FunSpec with ShouldMatchers {
 		describe("デフォルト値") {
 			it("最初に挿入される") {
 				val html = new HtmlFunctionWrapper
-				val actual = html.selectTag("2", createParam("param = { _list: {a: '1', b: '2', c: '3'}, " +
-					"""_default: { "選択してください": "" } }"""))
+				val actual = html.selectTag("2", createParam("param = { _list: [{1: 'a'}, {2: 'b'}, {3: 'c'}], " +
+					"""_default: { "": "選択してください" } }"""))
 				actual should be ("""<select><option value="">選択してください</option><option value="1">a</option>""" +
 					"""<option value="2" selected>b</option><option value="3">c</option></select>""")
 			}

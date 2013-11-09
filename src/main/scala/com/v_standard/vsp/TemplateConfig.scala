@@ -1,8 +1,8 @@
 package com.v_standard.vsp
 
-import com.v_standard.vsp.utils.ClassUtil
-import com.v_standard.vsp.utils.ResourceUtil.using
-import com.v_standard.vsp.utils.StringUtil
+import com.v_standard.utils.ClassUtil
+import com.v_standard.utils.ResourceUtil.using
+import com.v_standard.utils.StringUtil
 import java.io.{File, FileNotFoundException}
 import scala.xml.XML
 

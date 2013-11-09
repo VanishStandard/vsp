@@ -1,7 +1,8 @@
 package com.v_standard.vsp.script
 
-import com.v_standard.vsp.utils.StringUtil
+import com.v_standard.utils.HtmlUtil
 import java.io.ByteArrayOutputStream
+import java.text.DecimalFormat
 import sun.org.mozilla.javascript.internal.NativeArray
 import sun.org.mozilla.javascript.internal.NativeObject
 import scala.collection.JavaConverters._
@@ -51,7 +52,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 * @return Raw オブジェクト
 	 */
 	def br(str: String): Raw = {
-	 Raw(StringUtil.crlf2br(StringUtil.htmlEscape(str)))
+	 Raw(HtmlUtil.crlf2br(HtmlUtil.escape(str)))
 	}
 
 	/**
@@ -61,7 +62,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 * @return Raw オブジェクト
 	 */
 	def br(oc: OutputConverter): Raw = {
-	 Raw(StringUtil.crlf2br(oc.mkString))
+	 Raw(HtmlUtil.crlf2br(oc.mkString))
 	}
 
 
@@ -76,9 +77,9 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"checkbox\"").append(createAttrByParam(param))
 		val xhtml = isXhtml
-		val currentValue = convertCurrentValue(obj)
+		val currentValue = convertValue(obj)
 
-		if (param.get(PARAM_VALUE) == currentValue) {
+		if (convertValue(param.get(PARAM_VALUE)) == currentValue) {
 			if (xhtml) tag.append(" checked=\"checked\"")
 			else tag.append(" checked")
 		}
@@ -99,10 +100,10 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		checkRequiredParam(param, List(PARAM_VALUE))
 		val tag = new StringBuilder("<input type=\"radio\"").append(createAttrByParam(param))
 		val xhtml = isXhtml
-		val currentValue = convertCurrentValue(obj)
+		val currentValue = convertValue(obj)
 
 		if ((currentValue == null || currentValue == "") && getBoolean(param, PARAM_DEFAULT, false) ||
-			param.get(PARAM_VALUE) == currentValue) {
+			convertValue(param.get(PARAM_VALUE)) == currentValue) {
 			if (xhtml) tag.append(" checked=\"checked\"")
 			else tag.append(" checked")
 		}
@@ -123,7 +124,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		checkRequiredParam(param, List(PARAM_LIST))
 		val tag = new StringBuilder("<select").append(createAttrByParam(param)).append(">")
 		val xhtml = isXhtml
-		val currentValue = convertCurrentValue(obj)
+		val currentValue = convertValue(obj)
 
 		if (param.containsKey(PARAM_DEFAULT)) {
 			val entries = param.get(PARAM_DEFAULT).asInstanceOf[NativeObject].entrySet
@@ -162,7 +163,7 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 		param.entrySet.asScala.foreach { e =>
 			val key = e.getKey.toString
 			if (!key.startsWith("_"))
-				attr.append(" "). append(key).append("=\"").append(StringUtil.htmlEscape(e.getValue.toString)).append("\"")
+				attr.append(" "). append(key).append("=\"").append(HtmlUtil.escape(convertValue(e.getValue))).append("\"")
 		}
 		attr.toString
 	}
@@ -181,15 +182,15 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	}
 
 	/**
-	 * 現在値を文字列に変換
+	 * 値を文字列に変換
 	 *
-	 * @param 現在値
+	 * @param 値
 	 * @return 変換後の文字列
 	 */
-	private def convertCurrentValue(obj: Any): String = obj match {
+	private def convertValue(obj: Any): String = obj match {
 		case null => null
-		case None => null
-		case Some(v) => v.toString
+		case v: Option[_] => v.map(x => convertValue(x)).getOrElse(null)
+		case v: Double => new DecimalFormat("0.############").format(v)
 		case v => v.toString
 	}
 
@@ -201,7 +202,10 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	 */
 	private def convertOptionList(param: NativeObject): Seq[(String, String)] = {
 		param.get(PARAM_LIST) match {
-			case lst: NativeObject => lst.entrySet.asScala.map(e => (e.getKey.toString, e.getValue.toString)).toSeq.reverse
+			case lst: NativeArray => lst.asScala.map { l =>
+				val e = l.asInstanceOf[NativeObject].entrySet.asScala.head
+				(e.getKey.toString, e.getValue.toString)
+			}.toSeq
 			case lst: Seq[_] => lst.map {
 				case (l, v) => (l.toString, v.toString)
 			}
@@ -214,13 +218,13 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 	/**
 	 * <option> タグ生成。
 	 *
-	 * @param label ラベル
 	 * @param value 値
+	 * @param label ラベル
 	 * @param currentValue 現在値
 	 * @param xhtml XHTML なら true
 	 * @return タグ
 	 */
-	private def optionTag(label: String, value: String, currentValue: String, xhtml: Boolean): String = {
+	private def optionTag(value: String, label: String, currentValue: String, xhtml: Boolean): String = {
 		val tag = new StringBuilder(s"""<option value="$value"""")
 		if (value == currentValue) {
 			if (xhtml) tag.append(" selected=\"selected\"")
