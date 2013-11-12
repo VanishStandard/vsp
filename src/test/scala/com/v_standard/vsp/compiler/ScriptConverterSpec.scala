@@ -25,6 +25,7 @@ class ScriptConverterSpec extends FunSpec with ShouldMatchers {
 """)
 
 				res._2 should be (true)
+				res._3 should be ('empty)
 			}
 		}
 
@@ -46,6 +47,7 @@ print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var2 == null) ? "" : var2
 """ + ScriptConverter.FUNC_FORSEQ)
 
 				res._2 should be (false)
+				res._3 should be ('empty)
 			}
 		}
 
@@ -66,6 +68,7 @@ print("\n\t</body>\n</html>");
 """ + ScriptConverter.FUNC_FORSEQ)
 
 				res._2 should be (false)
+				res._3 should be ('empty)
 			}
 		}
 
@@ -94,6 +97,8 @@ print("\n\t</body>\n</html>");
 """ + ScriptConverter.FUNC_FORSEQ)
 
 					res._2 should be (false)
+					res._3.size should be (1)
+					res._3.head should be (new File("./src/test/resources/templates/common.html").getCanonicalFile)
 				}
 			}
 
@@ -112,6 +117,8 @@ print("\n\t<body>\n\t</body>\n</html>");
 """)
 
 					res._2 should be (true)
+					res._3.size should be (1)
+					res._3.head should be (new File("./src/test/resources/templates/text.html").getCanonicalFile)
 				}
 			}
 

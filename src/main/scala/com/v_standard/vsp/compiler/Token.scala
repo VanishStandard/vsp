@@ -85,9 +85,12 @@ class IncludeToken(context: ScriptConverterContext) extends Token {
 		if (ScriptDefine.MAX_INCLUDE <= context.deep)
 			throw new IllegalStateException("Failed to include. count(" + context.deep + ")")
 
-		using(ResourceUtil.getSource(new File(context.config.baseDir.getPath, tokenStr.toString.trim))) { r =>
+		val f = new File(context.config.baseDir.getPath, tokenStr.toString.trim)
+		using(ResourceUtil.getSource(f)) { r =>
 			val res = ScriptConverter.convert(r, context.config, context.deep + 1)
 			if (!res._2) context.textOnly = false
+			context.includeFiles += f.getCanonicalFile
+			context.includeFiles ++= res._3
 			res._1
 		}
 	}

@@ -1,6 +1,6 @@
 package com.v_standard.vsp.compiler
 
-import java.io.{ByteArrayOutputStream, OutputStreamWriter}
+import java.io.{ByteArrayOutputStream, File, OutputStreamWriter}
 import java.util.Date
 import javax.script.{Compilable, CompiledScript, ScriptEngine, ScriptEngineManager}
 import scala.io.Source
@@ -9,7 +9,7 @@ import scala.io.Source
 /**
  * スクリプトデータ。
  */
-case class ScriptData(cscript: Option[CompiledScript], text: Option[String], compileDate: Date)
+case class ScriptData(cscript: Option[CompiledScript], text: Option[String], compileDate: Date, includeFiles: Set[File])
 
 
 /**
@@ -41,18 +41,18 @@ object ScriptCompiler {
 	 */
 	def compile(source: Source, config: TokenParseConfig): ScriptData = {
 		try {
-			val (script, textOnly) = ScriptConverter.convert(source, config)
+			val (script, textOnly, includeFiles) = ScriptConverter.convert(source, config)
 			val cscript = compileEngine.compile(script)
 			if (textOnly) {
 				val out = new ByteArrayOutputStream()
 				val context = createScriptEngine().getContext()
 				context.setWriter(new OutputStreamWriter(out))
 				cscript.eval(context)
-				ScriptData(None, Option(out.toString()), new Date())
+				ScriptData(None, Option(out.toString()), new Date(), includeFiles.toSet)
 			}
-			else ScriptData(Option(cscript), None, new Date())
+			else ScriptData(Option(cscript), None, new Date(), includeFiles.toSet)
 		} catch {
-			case e: Exception => ScriptData(None, Option(e.getMessage), new Date())
+			case e: Exception => ScriptData(None, Option(e.getMessage), new Date(), Set.empty[File])
 		}
 	}
 }
