@@ -34,7 +34,7 @@ class TokenSpec extends FunSpec with ShouldMatchers {
 			token += 'h'
 
 			token.toScript should be ("print(" + ScriptDefine.SCRIPT_OBJ_NAME +
-        ".escape(ab\ncd\tef\rg\"h));\n")
+				".escape((ab\ncd\tef\rg\"h == null) ? \"\" : ab\ncd\tef\rg\"h));\n")
 		}
 	}
 

@@ -61,7 +61,8 @@ class StringToken() extends Token {
  */
 class PrintToken extends Token {
 	override def toScript: String = {
-		"print(" + ScriptDefine.SCRIPT_OBJ_NAME + ".escape(" + tokenStr.toString + "));\n"
+		"print(" + ScriptDefine.SCRIPT_OBJ_NAME + ".escape((" + tokenStr.toString + " == null) ? \"\" : " +
+		tokenStr.toString + "));\n"
 	}
 }
 
