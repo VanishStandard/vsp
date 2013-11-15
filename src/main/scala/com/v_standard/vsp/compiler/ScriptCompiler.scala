@@ -1,5 +1,6 @@
 package com.v_standard.vsp.compiler
 
+import com.v_standard.utils.ResourceUtil.using
 import java.io.{ByteArrayOutputStream, File, OutputStreamWriter}
 import java.util.Date
 import javax.script.{Compilable, CompiledScript, ScriptEngine, ScriptEngineManager}
@@ -40,8 +41,10 @@ object ScriptCompiler {
 	 * @return スクリプトデータ
 	 */
 	def compile(source: Source, config: TokenParseConfig): ScriptData = {
+		var jsSrc: String = ""
 		try {
 			val (script, textOnly, includeFiles) = ScriptConverter.convert(source, config)
+			jsSrc = script
 			val cscript = compileEngine.compile(script)
 			if (textOnly) {
 				val out = new ByteArrayOutputStream()
@@ -52,7 +55,18 @@ object ScriptCompiler {
 			}
 			else ScriptData(Option(cscript), None, new Date(), includeFiles.toSet)
 		} catch {
-			case e: Exception => ScriptData(None, Option(e.getMessage), new Date(), Set.empty[File])
+			case e: Exception =>
+				ScriptData(None, Option(e.getMessage +
+					using(Source.fromString(jsSrc)) { r =>
+						var count = 0
+						val sb = new StringBuilder("\n")
+						r.getLines.foreach { l =>
+							count += 1
+							sb.append("%04d".format(count)).append(": ").append(l).append("\n")
+						}
+						sb.toString
+					}
+				), new Date(), Set.empty[File])
 		}
 	}
 }
