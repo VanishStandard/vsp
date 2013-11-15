@@ -1,7 +1,8 @@
 package com.v_standard.vsp.compiler
 
 import java.io.File
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 
 /**
@@ -11,8 +12,9 @@ import scala.collection.mutable.ArrayBuffer
  * @param deep 深さ
  */
 case class ScriptConverterContext(config: TokenParseConfig, deep: Int = 0) {
-	val tokens = new ArrayBuffer[Token]
+	val tokens = ListBuffer.empty[Token]
 	val buffer = new StringBuilder
+	val includeFiles = mutable.Set.empty[File]
 
 	var currentToken: Option[Token] = None
 	var textOnly: Boolean = true

@@ -30,7 +30,7 @@ case class TemplateDataManager(config: TemplateConfig) extends Logging {
 		logger.debug("Template data key: " + key)
 		val td = templates.get(key)
 		val newTd = if (td == null || shouldCheckModify(td.lastCheckDate, config.checkPeriod)) {
-			if (td == null || shouldReCompile(file, td.scriptData.compileDate)) {
+			if (td == null || shouldReCompile(file, td.scriptData.includeFiles, td.scriptData.compileDate)) {
 				TemplateData(using(ResourceUtil.getSource(file)) { r =>
 					ScriptCompiler.compile(r, TokenParseConfig(config.templateDir, config.sign))
 				}, new Date)
@@ -56,8 +56,10 @@ case class TemplateDataManager(config: TemplateConfig) extends Logging {
 	 * 再コンパイルが必要か。
 	 *
 	 * @param file テンプレートファイル
+	 * @param includeFiles インクルードテンプレートファイル一覧
 	 * @param コンパイル日時
 	 * @return 必要なら true
 	 */
-	private def shouldReCompile(file: File, compiledDate: Date): Boolean = file.lastModified > compiledDate.getTime
+	private def shouldReCompile(file: File, includeFiles: Set[File], compiledDate: Date): Boolean =
+		file.lastModified > compiledDate.getTime || includeFiles.exists(_.lastModified > compiledDate.getTime)
 }

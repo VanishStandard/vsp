@@ -25,6 +25,7 @@ class ScriptConverterSpec extends FunSpec with ShouldMatchers {
 """)
 
 				res._2 should be (true)
+				res._3 should be ('empty)
 			}
 		}
 
@@ -37,15 +38,16 @@ class ScriptConverterSpec extends FunSpec with ShouldMatchers {
 </html>%{var2}"""), TokenParseConfig(null, '%'))
 
 				res._1 should be (
-"""print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(var1));
+"""print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var1 == null) ? "" : var1));
 print("<html>\n\t<body>\n\t\t");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(efg));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((efg == null) ? "" : efg));
 print("\n\t</body>\n</html>");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(var2));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var2 == null) ? "" : var2));
 """ + ScriptConverter.FUNC_FORSEQ)
 
 				res._2 should be (false)
+				res._3 should be ('empty)
 			}
 		}
 
@@ -60,12 +62,13 @@ print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(var2));
 				res._1 should be (
 """if (abc > 0) {
 print("<html>\n\t<body>\n\t\t");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
 print("\n\t</body>\n</html>");
 }
 """ + ScriptConverter.FUNC_FORSEQ)
 
 				res._2 should be (false)
+				res._3 should be ('empty)
 			}
 		}
 
@@ -86,14 +89,16 @@ if (n == 1) {
 print("<script type=\"text/javascript\" src=\"n.js\"></script>");
 }
 print("\n<title>");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(title));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((title == null) ? "" : title));
 print("</title>\n");
 print("\n\t<body>\n\t\t");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape(abc));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
 print("\n\t</body>\n</html>");
 """ + ScriptConverter.FUNC_FORSEQ)
 
 					res._2 should be (false)
+					res._3.size should be (1)
+					res._3.head should be (new File("./src/test/resources/templates/common.html").getCanonicalFile)
 				}
 			}
 
@@ -112,6 +117,8 @@ print("\n\t<body>\n\t</body>\n</html>");
 """)
 
 					res._2 should be (true)
+					res._3.size should be (1)
+					res._3.head should be (new File("./src/test/resources/templates/text.html").getCanonicalFile)
 				}
 			}
 

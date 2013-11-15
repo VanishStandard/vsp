@@ -1,7 +1,8 @@
 package com.v_standard.vsp.compiler
 
 import com.typesafe.scalalogging.slf4j.Logging
-import scala.collection.mutable.ArrayBuffer
+import java.io.File
+import scala.collection.mutable
 import scala.io.Source
 
 
@@ -22,9 +23,9 @@ function forseq(list, func) {
 	 * @param source テンプレートソース
 	 * @param config トークン解析設定
 	 * @param deep 深さ
-	 * @return (スクリプト文字列, テキストのみフラグ)
+	 * @return (スクリプト文字列, テキストのみフラグ, インクルードファイル)
 	 */
-	def convert(source: Source, config: TokenParseConfig, deep: Int = 0): (String, Boolean) = {
+	def convert(source: Source, config: TokenParseConfig, deep: Int = 0): (String, Boolean, mutable.Set[File]) = {
 		val context = ScriptConverterContext(config, deep)
 		TokenParser.exec(source, context)
 
@@ -40,6 +41,6 @@ function forseq(list, func) {
 		if (!context.textOnly && deep == 0) sb.append(FUNC_FORSEQ)
 		val res = sb.toString
 		logger.trace("Script converted\n" + res)
-		(res, context.textOnly)
+		(res, context.textOnly, context.includeFiles)
 	}
 }
