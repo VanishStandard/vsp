@@ -1,5 +1,6 @@
 package com.v_standard.vsp.compiler
 
+import com.typesafe.scalalogging.slf4j.Logging
 import com.v_standard.vsp.script.ScriptDefine
 import com.v_standard.utils.ResourceUtil
 import com.v_standard.utils.ResourceUtil.using
@@ -80,12 +81,13 @@ class SyntaxToken extends Token {
 /**
  * インクルードトークンクラス。
  */
-class IncludeToken(context: ScriptConverterContext) extends Token {
+class IncludeToken(context: ScriptConverterContext) extends Token with Logging {
 	override def toScript: String = {
 		if (ScriptDefine.MAX_INCLUDE <= context.deep)
 			throw new IllegalStateException("Failed to include. count(" + context.deep + ")")
 
 		val f = new File(context.config.baseDir.getPath, tokenStr.toString.trim)
+		logger.debug("Include file: " + f.getAbsolutePath)
 		using(ResourceUtil.getSource(f)) { r =>
 			val res = ScriptConverter.convert(r, context.config, context.deep + 1)
 			if (!res._2) context.textOnly = false

@@ -32,6 +32,7 @@ case class TemplateDataManager(config: TemplateConfig) extends Logging {
 		val newTd = if (td == null || shouldCheckModify(td.lastCheckDate, config.checkPeriod)) {
 			if (td == null || shouldReCompile(file, td.scriptData.includeFiles, td.scriptData.compileDate)) {
 				TemplateData(using(ResourceUtil.getSource(file)) { r =>
+					logger.debug("Compile file: " + key)
 					ScriptCompiler.compile(r, TokenParseConfig(config.templateDir, config.sign))
 				}, new Date)
 			} else TemplateData(td.scriptData, new Date)
