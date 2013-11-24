@@ -41,19 +41,22 @@ object ScriptCompiler {
 	 * @return スクリプトデータ
 	 */
 	def compile(source: Source, config: TokenParseConfig): ScriptData = {
-		var jsSrc: String = ""
+		var jsSrc = ""
+		var includeFiles = Set.empty[File]
+
 		try {
-			val (script, textOnly, includeFiles) = ScriptConverter.convert(source, config)
+			val (script, textOnly, incFiles) = ScriptConverter.convert(source, config)
 			jsSrc = script
+			includeFiles = incFiles.toSet
 			val cscript = compileEngine.compile(script)
 			if (textOnly) {
 				val out = new ByteArrayOutputStream()
 				val context = createScriptEngine().getContext()
 				context.setWriter(new OutputStreamWriter(out))
 				cscript.eval(context)
-				ScriptData(None, Option(out.toString()), new Date(), includeFiles.toSet)
+				ScriptData(None, Option(out.toString()), new Date(), includeFiles)
 			}
-			else ScriptData(Option(cscript), None, new Date(), includeFiles.toSet)
+			else ScriptData(Option(cscript), None, new Date(), includeFiles)
 		} catch {
 			case e: Exception =>
 				ScriptData(None, Option(e.getMessage +
@@ -66,7 +69,7 @@ object ScriptCompiler {
 						}
 						sb.toString
 					}
-				), new Date(), Set.empty[File])
+				), new Date(), includeFiles)
 		}
 	}
 }
