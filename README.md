@@ -26,7 +26,7 @@ sbt
 ```scala
 sbtresolvers += "VanishStandard Maven Repository" at "http://vanishstandard.github.com/mvn-repo"
 
-libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.2"
+libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.3"
 ```
 
 ## 使い方
@@ -123,6 +123,12 @@ forseq
 <% forseq(list, function(num, i) { %>
 %{i}: %{num}
 <% }); %>
+```
+
+br
+> 改行を &lt;br /&gt; タグに変換
+```text
+%{br("aaa\nbbb")}
 ```
 
 ## ライセンス
