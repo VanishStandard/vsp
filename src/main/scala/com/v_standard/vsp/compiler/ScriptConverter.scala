@@ -16,6 +16,12 @@ function forseq(list, func) {
 	for (var i = 0; i < len; ++i) func(list.apply(i), i);
 }
 """
+	val FUNC_BR = """
+function br(val) {
+ return val == null ? "" : vsp.br(val);
+}
+"""
+
 
 	/**
 	 * 変換。
@@ -38,7 +44,7 @@ function forseq(list, func) {
 
 		val sb = new StringBuilder
 		context.tokens.foreach(t => sb.append(t.toScript))
-		if (!context.textOnly && deep == 0) sb.append(FUNC_FORSEQ)
+		if (!context.textOnly && deep == 0) sb.append(FUNC_FORSEQ).append(FUNC_BR)
 		val res = sb.toString
 		logger.trace("Script converted\n" + res)
 		(res, context.textOnly, context.includeFiles)

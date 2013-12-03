@@ -44,7 +44,7 @@ print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc))
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((efg == null) ? "" : efg));
 print("\n\t</body>\n</html>");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var2 == null) ? "" : var2));
-""" + ScriptConverter.FUNC_FORSEQ)
+""" + ScriptConverter.FUNC_FORSEQ + ScriptConverter.FUNC_BR)
 
 				res._2 should be (false)
 				res._3 should be ('empty)
@@ -65,7 +65,7 @@ print("<html>\n\t<body>\n\t\t");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
 print("\n\t</body>\n</html>");
 }
-""" + ScriptConverter.FUNC_FORSEQ)
+""" + ScriptConverter.FUNC_FORSEQ + ScriptConverter.FUNC_BR)
 
 				res._2 should be (false)
 				res._3 should be ('empty)
@@ -94,7 +94,7 @@ print("</title>\n");
 print("\n\t<body>\n\t\t");
 print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
 print("\n\t</body>\n</html>");
-""" + ScriptConverter.FUNC_FORSEQ)
+""" + ScriptConverter.FUNC_FORSEQ + ScriptConverter.FUNC_BR)
 
 					res._2 should be (false)
 					res._3.size should be (1)
