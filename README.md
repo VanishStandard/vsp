@@ -126,7 +126,7 @@ forseq
 ```
 
 br
-> 改行を <br /> タグに変換
+> 改行を &gt;br /%lt; タグに変換
 ```text
 %{br("aaa\nbbb")}
 ```
