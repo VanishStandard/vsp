@@ -42,7 +42,11 @@ class Template(val manager: TemplateDataManager) {
 			engine.put(ScriptDefine.HTML_OBJ_NAME, new HtmlFunction(out, isXhtml))
 			val context = engine.getContext()
 			context.setWriter(new OutputStreamWriter(out))
-			sd.cscript.get.eval(context)
+			try {
+				sd.cscript.get.eval(context)
+			} catch {
+				case e: Exception => throw new RuntimeException("Failed to eval script. \n" + sd.debugSource, e)
+			}
 			out.toString()
 		}
 	}
