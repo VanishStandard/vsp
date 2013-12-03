@@ -125,6 +125,12 @@ forseq
 <% }); %>
 ```
 
+br
+> 改行を <br /> タグに変換
+```text
+%{br("aaa\nbbb")}
+```
+
 ## ライセンス
 
 3-clause BSD license
