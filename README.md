@@ -26,7 +26,7 @@ sbt
 ```scala
 sbtresolvers += "VanishStandard Maven Repository" at "http://vanishstandard.github.com/mvn-repo"
 
-libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.3"
+libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.4"
 ```
 
 ## 使い方
@@ -116,19 +116,132 @@ template1/template.tmpl
 
 ```
 
-## 組み込み JavaScript 関数
-forseq
+## 組み込み関数・オブジェクト
+### JavaScript 関数
+**forseq(list, action)**
 > Scala の Seq ループ用ヘルパー関数
+> * list: length(), appli() 関数を持つ Scala オブジェクト
+> * action: 各要素, インデックスを受け処理を行うアクション
+
 ```text
 <% forseq(list, function(num, i) { %>
 %{i}: %{num}
 <% }); %>
 ```
+結果
+```text
+1: 2
 
-br
+2: 4
+
+3: 6
+
+4: 8
+```
+
+**br(str)**
 > 改行を &lt;br /&gt; タグに変換
+> * str: 変換対象文字列
+
 ```text
 %{br("aaa\nbbb")}
+```
+結果
+```text
+aaa<br />bbb
+```
+
+### vsp オブジェクト
+**raw(str)**
+> HTML エスケープしない文字を出力
+> * str: HTML 文字列
+
+```text
+%{"<br />"}
+%{vsp.raw("<br />")}
+```
+結果
+```text
+&lt;br /&gt;
+<br />
+```
+
+**format(pattern, obj)**
+> 指定したパターンで値の型によってフォーマット
+> * pattern: パターン
+> * obj: フォーマット対象オブジェクト
+
+```text
+日付(java.util.Date, java.util.Calendar)
+%{vsp.format("yyyy-MM-dd hh:mm", dt)}
+
+整数(int, long)
+%{vsp.format("#,###,##0", 1000)}
+
+小数(float, double)
+%{vsp.format("0.00", 1.1)}
+```
+結果
+```text
+日付(java.util.Date, java.util.Calendar)
+2013-12-04 10:30
+
+整数(int, long)
+1,000
+
+小数(float, double)
+1.10
+```
+
+### html オブジェクト
+**checkbox(currentValue, param)**
+> &lt;input type="checkbox"&gt; を生成
+> * currentValue: 現在の値 この値と同じ value のチェックボックスに checked が付く
+> * param: パラメータ用 JSON オブジェクト キー名が _ で始まるもの以外は input タグの属性として展開される
+
+```text
+<% var currentVal = 1 %>
+<% html.checkbox(currentVal, { value: "1", name: "chk1", id: "chk1", "class": "xxx" }); %>
+```
+結果
+```text
+
+<input type="checkbox" value="1" name="chk1" id="chk1" class="xxx" checked>
+```
+
+**radio(currentValue, param)**
+> &lt;input type="radio"&gt; を生成
+> * currentValue: 現在の値 この値と同じ value のチェックボックスに checked が付く
+> * param: パラメータ用 JSON オブジェクト キー名が _ で始まるもの以外は input タグの属性として展開される
+
+```text
+<% var currentVal = 2 %>
+<% html.radio(currentVal, { value: "1", name: "rd1", id: "rd1", "class": "xxx" }); %>
+```
+結果
+```text
+
+<input type="radio" value="1" name="rd1" id="rd1" class="xxx">
+```
+
+**select(currentValue, param)**
+> &lt;select&gt; を生成
+> * currentValue: 現在の値 この値と同じ value のチェックボックスに selected が付く。multiple には未対応。
+> * param: パラメータ用 JSON オブジェクト キー名が _ で始まるもの以外は input タグの属性として展開される。<br />\_list: option 用のリスト。JSON の value をキー、ラベルを値としたリストかScala の (value, ラベル) タプルの Seq または配列。<br />\_default: デフォルトに選択される option。value をキー、ラベルとしたJSON。
+
+```text
+<% var currentVal = 2 %>
+<% html.select(currentVal, { _list: [{1: 'a'}, {2: 'b'}, {3: 'c'}], _default: { "": "選択してください" }, name: "slt", id: "slt1", "class": "xxx" }); %>
+```
+結果
+```text
+
+<select name="slt" id="slt1" class="xxx>
+  <option value="">選択してください</option>
+  <option value="1">a</option>
+  <option value="2" selected>b</option>
+  <option value="3">c</option>
+</select>
 ```
 
 ## ライセンス
