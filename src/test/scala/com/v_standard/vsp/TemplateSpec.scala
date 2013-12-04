@@ -109,5 +109,21 @@ abc<br />efg
 """)
 			}
 		}
+
+		describe("HTML Function を使用したファイル") {
+			it("展開された文字列を返す") {
+				DefaultTemplateManager.init("vsp_success2.xml")
+				val template = DefaultTemplateManager.template("vsp_success2.xml")
+
+				case class Obj(id: Int, name: String)
+				template.build("html_func.html") should be ("""
+aaa<br />bbb
+ccc<br />ddd
+
+
+END
+""")
+			}
+    }
 	}
 }
