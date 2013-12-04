@@ -207,10 +207,10 @@ class HtmlFunction(val out: ByteArrayOutputStream, val isXhtml: Boolean) {
 				(e.getKey.toString, e.getValue.toString)
 			}.toSeq
 			case lst: Seq[_] => lst.map {
-				case (l, v) => (l.toString, v.toString)
+				case (v, l) => (v.toString, l.toString)
 			}
 			case lst: Array[_] => lst.map {
-				case (l, v) => (l.toString, v.toString)
+				case (v, l) => (v.toString, l.toString)
 			}
 		}
 	}
