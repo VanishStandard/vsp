@@ -118,11 +118,11 @@ template1/template.tmpl
 
 ## 組み込み関数・オブジェクト
 ### JavaScript 関数
-forseq(list, action)
+**forseq(list, action)**
 > Scala の Seq ループ用ヘルパー関数
 > * list: length(), appli() 関数を持つ Scala オブジェクト
 > * action: 各要素, インデックスを受け処理を行うアクション
->
+
 ```text
 <% forseq(list, function(num, i) { %>
 %{i}: %{num}
@@ -139,10 +139,10 @@ forseq(list, action)
 4: 8
 ```
 
-br(str)
+**br(str)**
 > 改行を &lt;br /&gt; タグに変換
 > * str: 変換対象文字列
->
+
 ```text
 %{br("aaa\nbbb")}
 ```
@@ -152,10 +152,10 @@ aaa<br />bbb
 ```
 
 ### vsp オブジェクト
-raw(str)
+**raw(str)**
 > HTML エスケープしない文字を出力
 > * str: HTML 文字列
->
+
 ```text
 %{"<br />"}
 %{vsp.raw("<br />")}
@@ -166,11 +166,11 @@ raw(str)
 <br />
 ```
 
-format(pattern, obj)
+**format(pattern, obj)**
 > 指定したパターンで値の型によってフォーマット
 > * pattern: パターン
 > * obj: フォーマット対象オブジェクト
->
+
 ```text
 日付(java.util.Date, java.util.Calendar)
 %{vsp.format("yyyy-MM-dd hh:mm", dt)}
@@ -194,11 +194,11 @@ format(pattern, obj)
 ```
 
 ### html オブジェクト
-checkbox(currentValue, param)
+**checkbox(currentValue, param)**
 > &lt;input type="checkbox"&gt; を生成
 > * currentValue: 現在の値 この値と同じ value のチェックボックスに checked が付く
 > * param: パラメータ用 JSON オブジェクト キー名が _ で始まるもの以外は input タグの属性として展開される
->
+
 ```text
 <% var currentVal = 1 %>
 <% html.checkbox(currentVal, { value: "1", name: "chk1", id: "chk1", "class": "xxx" }); %>
@@ -209,11 +209,11 @@ checkbox(currentValue, param)
 <input type="checkbox" value="1" name="chk1" id="chk1" class="xxx" checked>
 ```
 
-radio(currentValue, param)
+**radio(currentValue, param)**
 > &lt;input type="radio"&gt; を生成
 > * currentValue: 現在の値 この値と同じ value のチェックボックスに checked が付く
 > * param: パラメータ用 JSON オブジェクト キー名が _ で始まるもの以外は input タグの属性として展開される
->
+
 ```text
 <% var currentVal = 2 %>
 <% html.radio(currentVal, { value: "1", name: "rd1", id: "rd1", "class": "xxx" }); %>
@@ -224,11 +224,11 @@ radio(currentValue, param)
 <input type="radio" value="1" name="rd1" id="rd1" class="xxx">
 ```
 
-select(currentValue, param)
+**select(currentValue, param)**
 > &lt;select&gt; を生成
 > * currentValue: 現在の値 この値と同じ value のチェックボックスに selected が付く。multiple には未対応。
 > * param: パラメータ用 JSON オブジェクト キー名が _ で始まるもの以外は input タグの属性として展開される。<br />\_list: option 用のリスト。JSON の value をキー、ラベルを値としたリストかScala の (value, ラベル) タプルの Seq または配列。<br />\_default: デフォルトに選択される option。value をキー、ラベルとしたJSON。
->
+
 ```text
 <% var currentVal = 2 %>
 <% html.select(currentVal, { _list: [{1: 'a'}, {2: 'b'}, {3: 'c'}], _default: { "": "選択してください" }, name: "slt", id: "slt1", "class": "xxx" }); %>
