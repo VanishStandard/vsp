@@ -26,7 +26,7 @@ sbt
 ```scala
 sbtresolvers += "VanishStandard Maven Repository" at "http://vanishstandard.github.com/mvn-repo"
 
-libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.4"
+libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.5"
 ```
 
 ## 使い方
