@@ -12,7 +12,7 @@
 %{vsp.format("#,###,###", num)}
 %{html.br(crlf)}
 %{new Object().undefineProp}
-<ul><%forseq (list, function(obj, i) { %>
+<ul><%vspj.forseq (list, function(obj, i) { %>
 <li id="%{obj.id()}">%{i} - %{obj.name()}</li>
 <%});%>
 		</ul>

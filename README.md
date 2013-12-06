@@ -26,7 +26,7 @@ sbt
 ```scala
 sbtresolvers += "VanishStandard Maven Repository" at "http://vanishstandard.github.com/mvn-repo"
 
-libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.4"
+libraryDependencies += "com.v_standard.vsp" %% "vsp" % "0.6.5"
 ```
 
 ## 使い方
@@ -117,14 +117,14 @@ template1/template.tmpl
 ```
 
 ## 組み込み関数・オブジェクト
-### JavaScript 関数
+### JavaScript vspj オブジェクト
 **forseq(list, action)**
-> Scala の Seq ループ用ヘルパー関数
-> * list: length(), appli() 関数を持つ Scala オブジェクト
+> Scala のコレクションループ用ヘルパー関数
+> * list: iterator() 関数を持つ Scala オブジェクト
 > * action: 各要素, インデックスを受け処理を行うアクション
 
 ```text
-<% forseq(list, function(num, i) { %>
+<% vspj.forseq(list, function(num, i) { %>
 %{i}: %{num}
 <% }); %>
 ```
@@ -144,7 +144,7 @@ template1/template.tmpl
 > * str: 変換対象文字列
 
 ```text
-%{br("aaa\nbbb")}
+%{vspj.br("aaa\nbbb")}
 ```
 結果
 ```text
