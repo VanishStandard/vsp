@@ -38,13 +38,14 @@ class ScriptConverterSpec extends FunSpec with ShouldMatchers {
 </html>%{var2}"""), TokenParseConfig(null, '%'))
 
 				res._1 should be (
-"""print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var1 == null) ? "" : var1));
+					ScriptConverter.FUNC +
+"""print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var1) == null ? "" : (var1)));
 print("<html>\n\t<body>\n\t\t");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((efg == null) ? "" : efg));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc) == null ? "" : (abc)));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((efg) == null ? "" : (efg)));
 print("\n\t</body>\n</html>");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var2 == null) ? "" : var2));
-""" + ScriptConverter.FUNC_FORSEQ + ScriptConverter.FUNC_BR)
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var2) == null ? "" : (var2)));
+""")
 
 				res._2 should be (false)
 				res._3 should be ('empty)
@@ -60,12 +61,13 @@ print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((var2 == null) ? "" : var2
 </html><%}%>"""), TokenParseConfig(null, '%'))
 
 				res._1 should be (
+					ScriptConverter.FUNC +
 """if (abc > 0) {
 print("<html>\n\t<body>\n\t\t");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc) == null ? "" : (abc)));
 print("\n\t</body>\n</html>");
 }
-""" + ScriptConverter.FUNC_FORSEQ + ScriptConverter.FUNC_BR)
+""")
 
 				res._2 should be (false)
 				res._3 should be ('empty)
@@ -83,18 +85,18 @@ print("\n\t</body>\n</html>");
 </html>"""), TokenParseConfig(new File("./src/test/resources/templates"), '%'))
 
 					res._1 should be (
-						"""print("<html>\n\t");
+						ScriptConverter.FUNC + """print("<html>\n\t");
 print("<script type=\"text/javascript\" src=\"...\"></script>\n");
 if (n == 1) {
 print("<script type=\"text/javascript\" src=\"n.js\"></script>");
 }
 print("\n<title>");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((title == null) ? "" : title));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((title) == null ? "" : (title)));
 print("</title>\n");
 print("\n\t<body>\n\t\t");
-print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc == null) ? "" : abc));
+print(""" + ScriptDefine.SCRIPT_OBJ_NAME + """.escape((abc) == null ? "" : (abc)));
 print("\n\t</body>\n</html>");
-""" + ScriptConverter.FUNC_FORSEQ + ScriptConverter.FUNC_BR)
+""")
 
 					res._2 should be (false)
 					res._3.size should be (1)
